@@ -1,0 +1,12 @@
+﻿body {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+span {
+    font-style: italic;
+}
+
+#floor {
+    min-height: 1700px;
+    min-width: 1300px;
+}
