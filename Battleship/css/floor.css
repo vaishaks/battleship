@@ -1,5 +1,14 @@
-﻿#floor-container {
-    min-height: 1600px;
+﻿.direction-buttons {
+    height: 175px;
+    margin: 10px;
+}
+
+.inline {
+    float: left;
+}
+
+#floor-container {
+    height: 1550px;
     min-width: 1200px;
     background-color: aqua;
 }
@@ -18,6 +27,29 @@
 
 #foot-controls {
     width: 100%;
-    height: 650px;
+    height: 600px;
     background-color: yellow;
+}
+
+#move-ships {
+    margin-left: 50px;
+}
+
+#leftright {
+    padding-top: 60px;
+    width: 400px;
+}
+
+#updown {
+    width: 400px;
+}
+
+#rotate-ship {
+    margin-top: 30px;
+    height: 400px;
+}
+
+#randomize {
+    margin-top: 90px;
+    height: 300px;
 }
