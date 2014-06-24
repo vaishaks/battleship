@@ -20,7 +20,12 @@
     <Content Include="css\app.css" />
     <Content Include="css\floor.css" />
     <Content Include="floor.html" />
-    <Content Include="images\Grid.png" />
+    <Content Include="images\down.png" />
+    <Content Include="images\left.png" />
+    <Content Include="images\randomize.png" />
+    <Content Include="images\refresh.png" />
+    <Content Include="images\right.png" />
+    <Content Include="images\up.png" />
     <Content Include="index.html" />
     <Content Include="css\screen.css" />
     <Content Include="screen.html" />
@@ -361,7 +366,6 @@
       <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
