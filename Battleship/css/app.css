@@ -10,3 +10,14 @@ span {
     min-height: 1700px;
     min-width: 1300px;
 }
+
+#screen {
+    /*position: relative;*/
+    min-height: 1700px;
+    min-width: 1300px;
+    float: right;
+}
+
+#wrapper {
+    min-width: 2800px;
+}
