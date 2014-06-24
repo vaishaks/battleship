@@ -1,0 +1,11 @@
+﻿#screen-container {
+    min-height: 1600px;
+    min-width: 1200px;
+    background-color: forestgreen;
+}
+
+#x-axis {
+    height: 100px;
+    width: 100%;
+    background-color: red;
+}

@@ -13,11 +13,11 @@ span {
 
 #screen {
     /*position: relative;*/
-    min-height: 1700px;
-    min-width: 1300px;
+    min-height: 1300px;
+    min-width: 1700px;
     float: right;
 }
 
 #wrapper {
-    min-width: 2800px;
+    min-width: 3200px;
 }

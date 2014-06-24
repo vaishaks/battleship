@@ -21,6 +21,8 @@
     <Content Include="css\floor.css" />
     <Content Include="floor.html" />
     <Content Include="index.html" />
+    <Content Include="css\screen.css" />
+    <Content Include="screen.html" />
     <Content Include="Scripts\angular-animate.js" />
     <Content Include="Scripts\angular-animate.min.js" />
     <Content Include="Scripts\angular-cookies.js" />
