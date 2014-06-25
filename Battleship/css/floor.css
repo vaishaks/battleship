@@ -1,4 +1,10 @@
-﻿.direction-buttons {
+﻿#floor {
+    background-color: aquamarine;
+    height: 1600px;
+    width: 1200px;
+}
+
+/*.direction-buttons {
     height: 175px;
     margin: 10px;
 }
@@ -52,4 +58,4 @@
 #randomize {
     margin-top: 90px;
     height: 300px;
-}
+}*/

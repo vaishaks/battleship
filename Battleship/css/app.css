@@ -6,9 +6,9 @@ span {
     font-style: italic;
 }
 
-#floor {
-    min-height: 1600px;
-    min-width: 1200px;
+#floor-container {
+    height: 1700px;
+    width: 1300px;
 }
 
 #screen {
