@@ -20,6 +20,7 @@
     <Content Include="css\app.css" />
     <Content Include="css\floor.css" />
     <Content Include="floor.html" />
+    <Content Include="images\aircraft carrier.png" />
     <Content Include="images\background.png" />
     <Content Include="images\down.png" />
     <Content Include="images\left.png" />
