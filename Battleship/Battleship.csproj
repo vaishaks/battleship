@@ -20,13 +20,16 @@
     <Content Include="css\app.css" />
     <Content Include="css\floor.css" />
     <Content Include="floor.html" />
-    <Content Include="images\aircraft carrier.png" />
+    <Content Include="images\aircraftCarrier.png" />
     <Content Include="images\background.png" />
+    <Content Include="images\Destroyer.png" />
     <Content Include="images\down.png" />
     <Content Include="images\left.png" />
+    <Content Include="images\PatrolBoat.png" />
     <Content Include="images\randomize.png" />
     <Content Include="images\refresh.png" />
     <Content Include="images\right.png" />
+    <Content Include="images\Submarine.png" />
     <Content Include="images\up.png" />
     <Content Include="index.html" />
     <Content Include="css\screen.css" />
