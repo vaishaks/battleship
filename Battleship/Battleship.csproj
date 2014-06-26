@@ -20,12 +20,13 @@
     <Content Include="css\app.css" />
     <Content Include="css\floor.css" />
     <Content Include="floor.html" />
-    <Content Include="images\aircraft carrier.png" />
-    <Content Include="images\background.png" />
+    <Content Include="images\aircraftcarrier.png" />
+    <Content Include="images\background-old.png" />
+    <Content Include="images\background.jpg" />
     <Content Include="images\down.png" />
     <Content Include="images\left.png" />
     <Content Include="images\randomize.png" />
-    <Content Include="images\refresh.png" />
+    <Content Include="images\rotate.png" />
     <Content Include="images\right.png" />
     <Content Include="images\up.png" />
     <Content Include="index.html" />
@@ -358,8 +359,14 @@
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-sanitize.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-scenario.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\createjs-lib\createjs-lib.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\createjs\createjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\easeljs\easeljs.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\kineticjs\kineticjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\preloadjs\preloadjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\soundjs\soundjs.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\tweenjs\tweenjs.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
