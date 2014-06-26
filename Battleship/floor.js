@@ -1,18 +1,19 @@
 ﻿/// <reference path="scripts/typings/jquery/jquery.d.ts" />
 /// <reference path="scripts/typings/createjs/createjs.d.ts" />
-
-module floor {
+var floor;
+(function (floor) {
     var canvas;
     var stage;
     var queue;
-    var manifest = [{ src: 'images/background.jpg', id: 'background' },
-                    { src: 'images/down.png', id: 'down' },
-                    { src: 'images/up.png', id: 'up' },
-                    { src: 'images/left.png', id: 'left' },
-                    { src: 'images/right.png', id: 'right' },
-                    { src: 'images/rotate.png', id: 'rotate' },
-                    { src: 'images/randomize.png', id: 'randomize'},
-                    { src: 'images/aircraftcarrier.png', id: 'aircraftcarrier'}];
+    var manifest = [
+        { src: 'images/background.jpg', id: 'background' },
+        { src: 'images/down.png', id: 'down' },
+        { src: 'images/up.png', id: 'up' },
+        { src: 'images/left.png', id: 'left' },
+        { src: 'images/right.png', id: 'right' },
+        { src: 'images/rotate.png', id: 'rotate' },
+        { src: 'images/randomize.png', id: 'randomize' },
+        { src: 'images/aircraftcarrier.png', id: 'aircraftcarrier' }];
 
     function startPreload() {
         queue = new createjs.LoadQueue(false);
@@ -68,9 +69,10 @@ module floor {
         stage.update();
     }
 
-    window.onload = () => {
+    window.onload = function () {
         canvas = document.getElementById("floor");
         stage = new createjs.Stage(canvas);
         startPreload();
     };
-}
+})(floor || (floor = {}));
+//# sourceMappingURL=floor.js.map
