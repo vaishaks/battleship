@@ -6,18 +6,25 @@ module floor {
     var stage;
     var queue;
     var manifest = [{ src: 'images/background.jpg', id: 'background' },
-                    { src: 'images/down.png', id: 'down' },
-                    { src: 'images/up.png', id: 'up' },
-                    { src: 'images/left.png', id: 'left' },
-                    { src: 'images/right.png', id: 'right' },
-                    { src: 'images/rotate.png', id: 'rotate' },
-                    { src: 'images/randomize.png', id: 'randomize'},
-                    { src: 'images/aircraftcarrier.png', id: 'aircraftcarrier'}];
+        { src: 'images/down.png', id: 'down' },
+        { src: 'images/up.png', id: 'up' },
+        { src: 'images/left.png', id: 'left' },
+        { src: 'images/right.png', id: 'right' },
+        { src: 'images/rotate.png', id: 'rotate' },
+        { src: 'images/randomize.png', id: 'randomize' },
+        { src: 'images/aircraftCarrier.png', id: 'aircraftcarrier' },
+        { src: 'images/Destroyer.png', id: 'destroyer' },
+        { src: 'images/Submarine.png', id: 'submarine' },
+        { src: 'images/PatrolBoat.png', id: 'patrolboat' }];
 
     function startPreload() {
         queue = new createjs.LoadQueue(false);
         queue.addEventListener('complete', handleComplete, false);
         queue.loadManifest(manifest);
+    }
+
+    function movementControlEventHandler(eventinfo) {
+        console.log("Down was clicked!");
     }
 
     function handleComplete(eventinfo) {
@@ -28,18 +35,22 @@ module floor {
         var right = new createjs.Bitmap(queue.getResult('right'));
         var rotate = new createjs.Bitmap(queue.getResult('rotate'));
         var randomize = new createjs.Bitmap(queue.getResult('randomize'));
-        var aircraftcarrier = new createjs.Bitmap(queue.getResult('aircraftcarrier'));
+        var aircraftCarrier = new createjs.Bitmap(queue.getResult('aircraftcarrier'));
+        var destroyer1 = new createjs.Bitmap(queue.getResult('destroyer'));
+        var destroyer2 = new createjs.Bitmap(queue.getResult('destroyer'));
+        var patrolBoat = new createjs.Bitmap(queue.getResult('patrolboat'));
+        var submarine = new createjs.Bitmap(queue.getResult('submarine'));
 
         up.scaleX = up.scaleY = left.scaleX = left.scaleY = right.scaleX = right.scaleY = down.scaleX = down.scaleY = 0.25;
         rotate.scaleY = rotate.scaleX = 0.9;
-        randomize.scaleX = randomize.scaleY = 0.6;
+        randomize.scaleX = randomize.scaleY = 0.5;
         up.x = 150;
         left.y = 150;
         right.x = right.y = 150;
-        rotate.x = 400;
+        rotate.x = 420;
         rotate.y = 0;
-        randomize.x = 800;
-        randomize.y = -20;
+        randomize.x = 830;
+        randomize.y = 20;
 
         var movementControls = new createjs.Container();
         movementControls.x = 50;
@@ -51,10 +62,26 @@ module floor {
         movementControls.addChild(rotate);
         movementControls.addChild(randomize);
 
+        patrolBoat.x = 830;
+        patrolBoat.y = 5;
+        patrolBoat.scaleX = patrolBoat.scaleY = 0.8;
+        aircraftCarrier.y = 250;
+        aircraftCarrier.x = 80;
+        destroyer1.scaleX = destroyer1.scaleY = destroyer2.scaleX = destroyer2.scaleY = 0.9;
+        destroyer1.y = destroyer2.y = 500;
+        destroyer1.x = 20;
+        destroyer2.x = 630;
+
         var ships = new createjs.Container();
-        ships.x = 50;
-        ships.y = 400;
-        ships.addChild(aircraftcarrier);
+        ships.y = 300;
+        ships.addChild(aircraftCarrier);
+        ships.addChild(patrolBoat);
+        ships.addChild(submarine);
+        ships.addChild(destroyer1);
+        ships.addChild(destroyer2);
+
+        down.addEventListener('click', movementControlEventHandler, false);
+
         stage.addChild(bg);
         stage.addChild(movementControls);
         stage.addChild(ships);
@@ -67,107 +94,3 @@ module floor {
         startPreload();
     };
 }
-
-//window.onload = () => {
-//    var sources = {
-//        down: 'down.png',
-//        left: 'left.png',
-//        right: 'right.png',
-//        up: 'up.png',
-//        randomize: 'randomize.png',
-//        refresh: 'refresh.png'
-//    };
-
-//    loadImages(sources, initStage);
-
-//    function loadImages(sources, callback) {
-//        var assetDir = 'images/';
-//        var images = {};
-//        var loadedImages = 0;
-//        var numImages = 0;
-
-//        // Load all images from folder in loop
-//        for (var src in sources) {
-//            numImages++;
-//        }
-//        for (var src in sources) {
-//            images[src] = new Image();
-//            images[src].onload = function () {
-//                if (++loadedImages >= numImages) {
-//                    callback(images);
-//                }
-//            };
-//            images[src].src = assetDir + sources[src];
-//        }
-//    }  
-
-//    function initStage(images) {
-//        var stage = new Kinetic.Stage({
-//            container: 'floor',
-//            width: 1200,
-//            height: 1600
-//        });
-
-//        var button_x = 50;
-//        var button_y = 1200;
-//        var buttonSize = 150;
-
-//        var down = new Kinetic.Image({
-//            image: images.down,
-//            x: button_x,
-//            y: button_y,
-//            height: buttonSize,
-//            width: buttonSize             
-//        });
-
-//        var up = new Kinetic.Image({
-//            image: images.up,
-//            x: button_x + 150,
-//            y:button_y,
-//            height: buttonSize,
-//            width: buttonSize    
-//        });
-
-//        var left = new Kinetic.Image({
-//            image: images.left,
-//            x: button_x,
-//            y: button_y + 150,
-//            height: buttonSize,
-//            width: buttonSize
-//        });
-
-//        var right = new Kinetic.Image({
-//            image: images.right,
-//            x: button_x + 150,
-//            y: button_y + 150,
-//            height: buttonSize,
-//            width: buttonSize
-//        });
-
-//        var refresh = new Kinetic.Image({
-//            image: images.refresh,
-//            x: button_x + 320,
-//            y: button_y - 90,
-//            height: 450,
-//            width: 450
-//        });
-
-//        var randomize = new Kinetic.Image({
-//            image: images.randomize,
-//            x: button_x + 800,
-//            y: button_y - 20,
-//            height: 300,
-//            width: 300
-//        });
-         
-//        var layer = new Kinetic.Layer();
-
-//        layer.add(down);
-//        layer.add(up);
-//        layer.add(left);
-//        layer.add(right);
-//        layer.add(refresh);
-//        layer.add(randomize);
-//        stage.add(layer);
-//    }
-//}; 
