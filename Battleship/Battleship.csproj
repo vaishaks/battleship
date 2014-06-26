@@ -26,6 +26,7 @@
     <Content Include="images\down.png" />
     <Content Include="images\left.png" />
     <Content Include="images\panelDown.png" />
+    <Content Include="images\PanelUp.png" />
     <Content Include="images\PatrolBoat.png" />
     <Content Include="images\randomize.png" />
     <Content Include="images\rotate.png" />
