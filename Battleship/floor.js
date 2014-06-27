@@ -7,6 +7,7 @@ var floor;
     var canvas;
     var stage;
     var queue;
+    var scrren;
     var manifest = [
         { src: "images/background.jpg", id: "background" },
         { src: "images/down.png", id: "down" },
@@ -31,6 +32,7 @@ var floor;
     function movementControlEventHandler(direction, ship) {
         console.log(direction + " was clicked!");
         console.log(ship);
+        screen.postMessage("Hello World", "*");
         switch (direction) {
             case "up":
                 if (ship.y < 200) {
@@ -151,6 +153,8 @@ var floor;
     window.onload = function () {
         canvas = document.getElementById("floor");
         stage = new createjs.Stage(canvas);
+        screen = window.parent.frames[1];
+
         startPreload();
     };
 })(floor || (floor = {}));

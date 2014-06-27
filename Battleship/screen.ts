@@ -33,6 +33,7 @@ module scrren {
         var submarine: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("submarine"));
         var grid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
 
+
         grid.x = 200;
         grid.y = 100;
         aircraftCarrier.x = Math.random() * 800;
@@ -59,6 +60,12 @@ module scrren {
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }
+
+    function messageEventHandler(eventinfo: any): void {
+        console.log(eventinfo.data);
+    }
+
+    window.addEventListener("message", messageEventHandler, false);
 
     window.onload = (): void => {
         canvas = document.getElementById("screen");

@@ -7,6 +7,7 @@ module floor {
     var canvas: HTMLElement;
     var stage: createjs.Stage;
     var queue: createjs.LoadQueue;
+    var scrren: Window;
     var manifest: Object = [{ src: "images/background.jpg", id: "background" },
                     { src: "images/down.png", id: "down" },
                     { src: "images/up.png", id: "up" },
@@ -30,6 +31,7 @@ module floor {
     function movementControlEventHandler(direction: string, ship: any): void {
         console.log(direction + " was clicked!");
         console.log(ship);
+        screen.postMessage("Hello World", "*");
         switch (direction) {
             case "up":
                 if (ship.y < 200) {
@@ -141,6 +143,8 @@ module floor {
     window.onload = (): void => {
         canvas = document.getElementById("floor");
         stage = new createjs.Stage(canvas);
+        screen = window.parent.frames[1];
+       
         startPreload();
     };
 }

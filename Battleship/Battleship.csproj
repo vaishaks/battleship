@@ -357,6 +357,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
+    <TypeScriptCompile Include="communicator.ts" />
     <TypeScriptCompile Include="floor.ts" />
     <TypeScriptCompile Include="screen.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
