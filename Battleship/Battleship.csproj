@@ -21,9 +21,12 @@
     <Content Include="css\floor.css" />
     <Content Include="floor.html" />
     <Content Include="images\aircraftCarrier.png" />
+    <Content Include="images\backgroundscreen.jpg" />
     <Content Include="images\background.jpg" />
     <Content Include="images\Destroyer.png" />
     <Content Include="images\down.png" />
+    <Content Include="images\grid.png" />
+    <Content Include="images\grid2.png" />
     <Content Include="images\left.png" />
     <Content Include="images\panelDown.png" />
     <Content Include="images\PanelUp.png" />
@@ -355,6 +358,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="floor.ts" />
+    <TypeScriptCompile Include="screen.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />

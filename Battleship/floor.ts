@@ -2,75 +2,81 @@
 /// <reference path="scripts/typings/createjs/createjs.d.ts" />
 
 module floor {
-    var canvas;
-    var stage;
-    var queue;
-    var manifest = [{ src: 'images/background.jpg', id: 'background' },
-                    { src: 'images/down.png', id: 'down' },
-                    { src: 'images/up.png', id: 'up' },
-                    { src: 'images/left.png', id: 'left' },
-                    { src: 'images/right.png', id: 'right' },
-                    { src: 'images/rotate.png', id: 'rotate' },
-                    { src: 'images/randomize.png', id: 'randomize' },
-                    { src: 'images/aircraftCarrier.png', id: 'aircraftcarrier' },
-                    { src: 'images/Destroyer.png', id: 'destroyer' },
-                    { src: 'images/Submarine.png', id: 'submarine' },
-                    { src: 'images/PatrolBoat.png', id: 'patrolboat' },
-                    { src: 'images/panelDown.png', id: 'panelDown' },
-                    { src: 'images/PanelUp.png', id: 'panelUp' }];
+    "use strict";
 
-    function startPreload() {
+    var canvas: HTMLElement;
+    var stage: createjs.Stage;
+    var queue: createjs.LoadQueue;
+    var manifest: Object = [{ src: "images/background.jpg", id: "background" },
+                    { src: "images/down.png", id: "down" },
+                    { src: "images/up.png", id: "up" },
+                    { src: "images/left.png", id: "left" },
+                    { src: "images/right.png", id: "right" },
+                    { src: "images/rotate.png", id: "rotate" },
+                    { src: "images/randomize.png", id: "randomize" },
+                    { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
+                    { src: "images/Destroyer.png", id: "destroyer" },
+                    { src: "images/Submarine.png", id: "submarine" },
+                    { src: "images/PatrolBoat.png", id: "patrolboat" },
+                    { src: "images/panelDown.png", id: "panelDown" },
+                    { src: "images/PanelUp.png", id: "panelUp" }];
+
+    function startPreload(): void {
         queue = new createjs.LoadQueue(false);
-        queue.addEventListener('complete', handleComplete, false);
+        queue.addEventListener("complete", handleComplete, false);
         queue.loadManifest(manifest);
     }
 
-    function movementControlEventHandler(direction: string, ship: any) {
+    function movementControlEventHandler(direction: string, ship: any): void {
         console.log(direction + " was clicked!");
         console.log(ship);
         switch (direction) {
             case "up":
-                if (ship.y < 200)
+                if (ship.y < 200) {
                     break;
+                }
                 ship.y -= 200;
                 break;
             case "down":
-                if (ship.y > 800)
+                if (ship.y > 800) {
                     break;
+                }
                 ship.y += 200;
                 break;
-            case "left": 
-                if (ship.x < 200)
+            case "left":
+                if (ship.x < 200) {
                     break;
+                }
                 ship.x -= 200;
                 break;
             case "right":
-                if (ship.x > 1000)
+                if (ship.x > 1000) {
                     break;
+                }
                 ship.x += 200;
                 break;
         }
     }
 
-    function update() {
+    function update(): void {
         stage.update();
     }
 
-    function handleComplete(eventinfo) {
-        var bg = new createjs.Bitmap(queue.getResult('background'));
-        var down = new createjs.Bitmap(queue.getResult('down'));
-        var up = new createjs.Bitmap(queue.getResult('up'));
-        var left = new createjs.Bitmap(queue.getResult('left'));
-        var right = new createjs.Bitmap(queue.getResult('right'));
-        var rotate = new createjs.Bitmap(queue.getResult('rotate'));
-        var randomize = new createjs.Bitmap(queue.getResult('randomize'));
-        var panelDown = new createjs.Bitmap(queue.getResult('panelDown'));
-        var aircraftCarrier = new createjs.Bitmap(queue.getResult('aircraftcarrier'));
-        var destroyer1 = new createjs.Bitmap(queue.getResult('destroyer'));
-        var destroyer2 = new createjs.Bitmap(queue.getResult('destroyer'));
-        var patrolBoat = new createjs.Bitmap(queue.getResult('patrolboat'));
-        var submarine = new createjs.Bitmap(queue.getResult('submarine'));
-        var panelUp = new createjs.Bitmap(queue.getResult('panelUp'));
+    function handleComplete(eventinfo: CustomEvent): void {
+        var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("background"));
+        var down: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("down"));
+        var up: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("up"));
+        var left: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("left"));
+        var right: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("right"));
+        var rotate: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("rotate"));
+        var randomize: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("randomize"));
+        var panelDown: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("panelDown"));
+        var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
+        var destroyer1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
+        var destroyer2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
+        var patrolBoat: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
+        var submarine: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("submarine"));
+        var panelUp: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("panelUp"));
 
         up.scaleX = up.scaleY = left.scaleX = left.scaleY = right.scaleX = right.scaleY = down.scaleX = down.scaleY = 0.25;
         rotate.scaleY = rotate.scaleX = 0.5;
@@ -85,7 +91,7 @@ module floor {
         panelDown.x = -50;
         panelDown.y = -40;
 
-        var movementControls = new createjs.Container();
+        var movementControls: createjs.Container = new createjs.Container();
         movementControls.x = 50;
         movementControls.y = 1240;
         movementControls.addChild(panelDown);
@@ -106,7 +112,7 @@ module floor {
         destroyer1.x = 20;
         destroyer2.x = 630;
 
-        var ships = new createjs.Container();
+        var ships: createjs.Container = new createjs.Container();
         ships.y = 350;
         ships.addChild(aircraftCarrier);
         ships.addChild(patrolBoat);
@@ -114,24 +120,25 @@ module floor {
         ships.addChild(destroyer1);
         ships.addChild(destroyer2);
 
-        var panel = new createjs.Container();
+        var panel: createjs.Container = new createjs.Container();
         panel.addChild(panelUp);
 
-        down.addEventListener('click', (eventinfo) => { movementControlEventHandler("down", aircraftCarrier); }, false);
-        up.addEventListener('click', (eventinfo) => { movementControlEventHandler("up", aircraftCarrier); }, false);
-        left.addEventListener('click', (eventinfo) => { movementControlEventHandler("left", aircraftCarrier); }, false);
-        right.addEventListener('click', (eventinfo) => { movementControlEventHandler("right", aircraftCarrier); }, false);
-        rotate.addEventListener('click', (eventinfo) => { movementControlEventHandler("rotate", aircraftCarrier); }, false);
+        down.addEventListener("click", (eventinfo: MSEventObj): void => { movementControlEventHandler("down", aircraftCarrier); }, false);
+        up.addEventListener("click", (eventinfo: MSEventObj): void => { movementControlEventHandler("up", aircraftCarrier); }, false);
+        left.addEventListener("click", (eventinfo: MSEventObj): void => { movementControlEventHandler("left", aircraftCarrier); }, false);
+        right.addEventListener("click", (eventinfo: MSEventObj): void => { movementControlEventHandler("right", aircraftCarrier); }, false);
+        rotate.addEventListener("click", (eventinfo: MSEventObj): void =>
+            { movementControlEventHandler("rotate", aircraftCarrier); }, false);
 
         stage.addChild(bg);
         stage.addChild(movementControls);
         stage.addChild(ships);
         stage.addChild(panel);
         createjs.Ticker.setFPS(60);
-        createjs.Ticker.addEventListener('tick', update, false);        
+        createjs.Ticker.addEventListener("tick", update, false);
     }
 
-    window.onload = () => {
+    window.onload = (): void => {
         canvas = document.getElementById("floor");
         stage = new createjs.Stage(canvas);
         startPreload();
