@@ -1,59 +1,8 @@
-﻿#floor {
-
+﻿body {
+    /*Change to 90 degrees for ripple*/
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
 }
-
-/*.direction-buttons {
-    height: 175px;
-    margin: 10px;
-}
-
-.inline {
-    float: left;
-}
-
-#floor-container {
-    height: 1550px;
-    min-width: 1200px;
-    background-color: aqua;
-}
-
-#status-bar {
-    width: 100%;
-    height: 200px;
-    background-color: red;
-}
-
-#ship-select {
-    width: 100%;
-    height: 750px;
-    background-color: green;
-}
-
-#foot-controls {
-    width: 100%;
-    height: 600px;
-    background-color: yellow;
-}
-
-#move-ships {
-    margin-left: 50px;
-}
-
-#leftright {
-    padding-top: 60px;
-    width: 400px;
-}
-
-#updown {
-    width: 400px;
-}
-
-#rotate-ship {
-    margin-top: 30px;
-    height: 400px;
-}
-
-#randomize {
-    margin-top: 90px;
-    height: 300px;
-}*/

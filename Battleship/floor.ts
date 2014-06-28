@@ -7,7 +7,7 @@ module floor {
     var canvas: HTMLElement;
     var stage: createjs.Stage;
     var queue: createjs.LoadQueue;
-    var scrren: Window;
+    var screen: Window;
     var manifest: Object = [{ src: "images/background.jpg", id: "background" },
                     { src: "images/down.png", id: "down" },
                     { src: "images/up.png", id: "up" },
