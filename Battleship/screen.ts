@@ -145,17 +145,23 @@ module scrren {
             }
             var x: number;
             var y: number;
+            var count: number = 0;
             do {
+                count++;
+                if (count > 10) {
+                    ships[i].isVertical = !ships[i].isVertical;
+                }
                 x = Math.floor(Math.random() * limitY);
                 y = Math.floor(Math.random() * limitX);
             }while (!canShipBePlaced(map, x, y, ships[i].isVertical, ships[i].length));
+            count = 0;
             if (ships[i].isVertical) {
-                for (var j = x;(x<5) && (j <= x + ships[i].length); j++) {
+                for (var j = x; (j < 5) && (j <= x + ships[i].length); j++) {
                     map[j][y] = false
                 }
             }
             else {
-                for (var j = y; (y < 7) && (j <= y + ships[i].length); j++) {
+                for (var j = y; (j < 7) && (j <= y + ships[i].length); j++) {
                     map[x][j] = false;
                 }
             }
@@ -165,14 +171,14 @@ module scrren {
 
     function canShipBePlaced(map: Array<Array<boolean>>, x: number, y: number, isVertical: boolean, len: number): boolean {
         if (isVertical) {
-            for (var i = x;(x < 5) && (i <= x + len); i++) {
+            for (var i = x; (i < 5) && (i <= x + len); i++) {
                 if (map[i][y] == false) {
                     return false
                 }
             }
         }
         else {
-            for (var i = y; (y<7) && (i <= y + len); i++) {
+            for (var i = y; (i < 7) && (i <= y + len); i++) {
                 if (map[x][i] == false) {
                     return false
                 }
@@ -188,4 +194,11 @@ module scrren {
         stage = new createjs.Stage(canvas);
         startPreload();
     };
+
+    window.onunload = (): void => {
+        createjs.Ticker.removeAllEventListeners();
+        stage.removeAllChildren();
+        stage.enableDOMEvents(false);
+        stage = null;
+    }
 } 
