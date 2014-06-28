@@ -7,15 +7,13 @@ span {
 }
 
 #floor-container {
-    height: 1700px;
-    width: 1300px;
+    min-height: 1700px;
+    min-width: 1700px
 }
 
 #screen {
-    /*position: relative;*/
     min-height: 1300px;
     min-width: 1700px;
-    float: right;
 }
 
 #wrapper {

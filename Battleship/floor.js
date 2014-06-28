@@ -7,7 +7,7 @@ var floor;
     var canvas;
     var stage;
     var queue;
-    var scrren;
+    var screen;
     var manifest = [
         { src: "images/background.jpg", id: "background" },
         { src: "images/down.png", id: "down" },
