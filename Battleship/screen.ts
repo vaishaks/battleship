@@ -10,6 +10,7 @@ module scrren {
     var shouldUpdate: boolean = true;
     var cells: any[] = [];
     var ships: Array<Ship> = new Array<Ship>(5);
+    var intervalId: any;
     var manifest: Object = [{ src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
                             { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
                             { src: "images/Destroyer.png", id: "destroyer" },
@@ -67,6 +68,7 @@ module scrren {
 
         cells = createGridCells();
 
+        // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         randomlyPlaceShips();
 
         rotate(ships[0]);
@@ -156,17 +158,18 @@ module scrren {
             }while (!canShipBePlaced(map, x, y, ships[i].isVertical, ships[i].length));
             count = 0;
             if (ships[i].isVertical) {
-                for (var j = x; (j < 5) && (j <= x + ships[i].length); j++) {
+                for (var j = x; (j < 5) && (j < x + ships[i].length); j++) {
                     map[j][y] = false
                 }
             }
             else {
-                for (var j = y; (j < 7) && (j <= y + ships[i].length); j++) {
+                for (var j = y; (j < 7) && (j < y + ships[i].length); j++) {
                     map[x][j] = false;
                 }
             }
             cells[x][y].addChild(ships[i].shipObject);
         }
+        shouldUpdate = true;
     } 
 
     function canShipBePlaced(map: Array<Array<boolean>>, x: number, y: number, isVertical: boolean, len: number): boolean {
@@ -200,5 +203,6 @@ module scrren {
         stage.removeAllChildren();
         stage.enableDOMEvents(false);
         stage = null;
+        window.clearInterval(intervalId);
     }
 } 
