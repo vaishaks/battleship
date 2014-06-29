@@ -110,18 +110,24 @@ module scrren {
         console.log(eventinfo.data);
     }
 
+    function cellClickEventHandler(eventinfo: any): void {
+        console.log(eventinfo.currentTarget.x / 200);
+        console.log(eventinfo.currentTarget.y / 200);
+    }
+
     function createGridCells(): any[] {
         var cells: any[] = new Array(5);
         var x, y = 0;
         for (var i = 0; i < 5; i++) {
-            cells[i] = new Array(6);
+            cells[i] = new Array<createjs.Container>(6);
             x = 0;
             for (var j = 0; j < 7; j++) {
                 var cell: createjs.Container = new createjs.Container();
                 cell.x = x;
                 cell.y = y;
                 x += 200;
-                cells[i][j] = cell;
+                cell.addEventListener("click", cellClickEventHandler, false);
+                cells[i][j] = cell;              
             }
             y += 200;
         }
