@@ -25,8 +25,11 @@
     <Content Include="images\background.jpg" />
     <Content Include="images\Destroyer.png" />
     <Content Include="images\down.png" />
+    <Content Include="images\explosion.png" />
     <Content Include="images\grid.png" />
+    <Content Include="images\hit.png" />
     <Content Include="images\left.png" />
+    <Content Include="images\miss.png" />
     <Content Include="images\panelDown.png" />
     <Content Include="images\PanelUp.png" />
     <Content Include="images\PatrolBoat.png" />
