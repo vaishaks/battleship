@@ -9,7 +9,7 @@ module scrren {
     var queue: createjs.LoadQueue;
     var shouldUpdate: boolean = true;
     var cells: any[] = [];
-    var ships: Array<Ship> = new Array<Ship>(5);
+    var ships: Array<Ship> = new Array<Ship>(6);
     var reticle: Reticle;
     var intervalId: any;
     var manifest: Object = [{ src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
@@ -79,6 +79,8 @@ module scrren {
         ships[3] = new Ship(destroyer2, 2);
         var patrolBoat1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
         ships[4] = new Ship(patrolBoat1, 1);
+        var patrolBoat2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
+        ships[5] = new Ship(patrolBoat2, 1);
 
         var grid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
 
@@ -147,7 +149,7 @@ module scrren {
                 map[i][j] = true;
             }
         }
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 6; i++) {
             if (Math.random() > 0.5) {
                 ships[i].isVertical = false;
             }
