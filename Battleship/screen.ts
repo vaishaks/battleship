@@ -10,6 +10,7 @@ module scrren {
     var shouldUpdate: boolean = true;
     var cells: any[] = [];
     var ships: Array<Ship> = new Array<Ship>(6);
+    var selectedShip: Ship;
     var reticle: Reticle;
     var intervalId: any;
     var manifest: Object = [{ src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
@@ -71,22 +72,29 @@ module scrren {
         var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));        
         var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
         ships[0] = new Ship(aircraftCarrier, 4);
+        ships[0].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(0); }, false);
         var submarine: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("submarine"));
         ships[1] = new Ship(submarine, 3);
+        ships[1].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(1); }, false);
         var destroyer1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
         ships[2] = new Ship(destroyer1, 2);
+        ships[2].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(2); }, false);
         var destroyer2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
         ships[3] = new Ship(destroyer2, 2);
+        ships[3].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(3); }, false);
         var patrolBoat1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
         ships[4] = new Ship(patrolBoat1, 1);
+        ships[4].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(4); }, false);
         var patrolBoat2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
         ships[5] = new Ship(patrolBoat2, 1);
+        ships[5].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(5); }, false);
 
         var grid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
 
         var gridContainer: createjs.Container = new createjs.Container();
         gridContainer.x = 100;
         gridContainer.y = 100;
+        gridContainer.addEventListener("click", gridClickEventHandler, false);
 
         cells = createGridCells();
 
@@ -99,7 +107,8 @@ module scrren {
             for (var j = 0; j < 7; j++) {
                 gridContainer.addChild(cells[i][j]);
             }
-        }        
+        }    
+            
         stage.addChild(bg);
         stage.addChild(gridContainer);
         createjs.Ticker.setFPS(60);
@@ -110,9 +119,13 @@ module scrren {
         console.log(eventinfo.data);
     }
 
-    function cellClickEventHandler(eventinfo: any): void {
-        console.log(eventinfo.currentTarget.x / 200);
-        console.log(eventinfo.currentTarget.y / 200);
+    function gridClickEventHandler(eventinfo: any): void {
+        console.log([Math.floor((eventinfo.rawY - 100) / 200), Math.floor((eventinfo.rawX - 100) / 200)]);
+    }
+
+    function shipClickEventHandler(shipId: number): void {
+        console.log(ships[shipId]);
+        selectedShip = ships[shipId];
     }
 
     function createGridCells(): any[] {
@@ -126,7 +139,6 @@ module scrren {
                 cell.x = x;
                 cell.y = y;
                 x += 200;
-                cell.addEventListener("click", cellClickEventHandler, false);
                 cells[i][j] = cell;              
             }
             y += 200;
@@ -193,6 +205,8 @@ module scrren {
                 }
             }
             cells[x][y].addChild(ships[i].shipObject);
+            ships[i].row = x;
+            ships[i].column = y;
         }
         shouldUpdate = true;
     } 
