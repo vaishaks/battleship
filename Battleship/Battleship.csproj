@@ -26,7 +26,6 @@
     <Content Include="images\Destroyer.png" />
     <Content Include="images\down.png" />
     <Content Include="images\grid.png" />
-    <Content Include="images\grid2.png" />
     <Content Include="images\left.png" />
     <Content Include="images\panelDown.png" />
     <Content Include="images\PanelUp.png" />
