@@ -8,17 +8,21 @@ module scrren {
     var stage: createjs.Stage;
     var queue: createjs.LoadQueue;
     var shouldUpdate: boolean = true;
-    var cells: any[] = [];
+    var cells: Array<Array<createjs.Container>> = [];
     var ships: Array<Ship> = new Array<Ship>(6);
+    var map: Array<Array<boolean>>;
     var selectedShip: Ship;
     var reticle: Reticle;
     var intervalId: any;
     var manifest: Object = [{ src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
-                            { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
-                            { src: "images/Destroyer.png", id: "destroyer" },
-                            { src: "images/Submarine.png", id: "submarine" },
-                            { src: "images/PatrolBoat.png", id: "patrolboat" },
-                            { src: "images/grid.png", id: "grid" }];
+        { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
+        { src: "images/Destroyer.png", id: "destroyer" },
+        { src: "images/Submarine.png", id: "submarine" },
+        { src: "images/PatrolBoat.png", id: "patrolboat" },
+        { src: "images/grid.png", id: "grid" },
+        { src: "images/explosion.png", id: "explosion" },
+        { src: "images/hit.png", id: "hit" },
+        { src: "images/miss.png", id: "miss" }];
 
     class Ship {
         public shipObject: createjs.Bitmap;
@@ -120,12 +124,81 @@ module scrren {
     }
 
     function gridClickEventHandler(eventinfo: any): void {
-        console.log([Math.floor((eventinfo.rawY - 100) / 200), Math.floor((eventinfo.rawX - 100) / 200)]);
+        var x: number = Math.floor((eventinfo.rawY - 100) / 200);
+        var y: number = Math.floor((eventinfo.rawX - 100) / 200);
+        //cells[x][y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+        shouldUpdate = true;
     }
 
     function shipClickEventHandler(shipId: number): void {
         console.log(ships[shipId]);
         selectedShip = ships[shipId];
+    }
+
+    function setMap(ship: Ship, flag: boolean): void {
+        if (ship.isVertical) {
+            for (var j = ship.row; (j < 5) && (j < ship.row + ship.length); j++) {
+                map[j][ship.column] = flag;
+            }
+        }
+        else {
+            for (var j = ship.column; (j < 7) && (j < ship.column + ship.length); j++) {
+                map[ship.row][j] = flag;
+            }
+        }
+    }
+
+    function movementButtonClickEventHandler(eventinfo: any) {
+        if (selectedShip == null) {
+            return;
+        }
+        setMap(selectedShip, true);
+        switch (eventinfo.target.id) {
+            case "up":
+                if (selectedShip.row - 1 >= 0 && 
+                    canShipBePlaced(selectedShip.row - 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
+                    selectedShip.row--;                    
+                }
+                break;
+            case "down":
+                if (!selectedShip.isVertical && (selectedShip.row + 1) < 5 &&
+                    canShipBePlaced(selectedShip.row + 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
+                    selectedShip.row++;
+                }
+                else if (selectedShip.row + selectedShip.length < 5 &&
+                    canShipBePlaced(selectedShip.row + 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
+                    selectedShip.row++;
+                }
+                break;
+            case "left":
+                if (selectedShip.column - 1 >= 0 &&
+                    canShipBePlaced(selectedShip.row, selectedShip.column -1, selectedShip.isVertical, selectedShip.length)) {
+                    selectedShip.column--;
+                }
+                break;
+            case "right":
+                if (selectedShip.isVertical && (selectedShip.column + 1) < 7 &&
+                    canShipBePlaced(selectedShip.row, selectedShip.column + 1, selectedShip.isVertical, selectedShip.length)) {
+                    selectedShip.column++;
+                }
+                else if (selectedShip.column + selectedShip.length < 7 &&
+                    canShipBePlaced(selectedShip.row, selectedShip.column + 1, selectedShip.isVertical, selectedShip.length)) {
+                    selectedShip.column++;
+                }
+                break;
+            case "rotate":
+                if (canShipBePlaced(selectedShip.row, selectedShip.column, !selectedShip.isVertical, selectedShip.length)) {
+                    rotate(selectedShip);
+                }
+                break;
+        }
+        setMap(selectedShip, false);
+        cells[selectedShip.row][selectedShip.column].addChild(selectedShip.shipObject);        
+        shouldUpdate = true;
+    }
+
+    function randomizeButtonClickEventHandler(eventinfo: any) {
+        randomlyPlaceShips();
     }
 
     function createGridCells(): any[] {
@@ -160,7 +233,7 @@ module scrren {
     }
 
     function randomlyPlaceShips(): void {
-        var map: Array<Array<boolean>> = new Array(5);
+        map = new Array(5);
         for (var i = 0; i < 5; i++) {
             map[i] = new Array(7);
             for (var j = 0; j < 7; j++) {
@@ -192,7 +265,7 @@ module scrren {
                 }
                 x = Math.floor(Math.random() * limitY);
                 y = Math.floor(Math.random() * limitX);
-            }while (!canShipBePlaced(map, x, y, ships[i].isVertical, ships[i].length));
+            }while (!canShipBePlaced(x, y, ships[i].isVertical, ships[i].length));
             count = 0;
             if (ships[i].isVertical) {
                 for (var j = x; (j < 5) && (j < x + ships[i].length); j++) {
@@ -211,21 +284,28 @@ module scrren {
         shouldUpdate = true;
     } 
 
-    function canShipBePlaced(map: Array<Array<boolean>>, x: number, y: number, isVertical: boolean, len: number): boolean {
+    function canShipBePlaced(x: number, y: number, isVertical: boolean, len: number): boolean {
         if (isVertical) {
-            for (var i = x; (i < 5) && (i <= x + len); i++) {
+            for (var i = x; (i < 5) && (i < x + len); i++) {
                 if (map[i][y] == false) {
-                    return false
+                    return false;
                 }
+            }
+            if (i == 5 && x == 4) {
+                return false;
             }
         }
         else {
-            for (var i = y; (i < 7) && (i <= y + len); i++) {
+            for (var i = y; (i < 7) && (i < y + len); i++) {
                 if (map[x][i] == false) {
-                    return false
+                    return false;
                 }
             }
+            if (i == 7 && y == 6) {
+                return false;
+            }
         }
+
         return true;
     }
 
@@ -234,6 +314,12 @@ module scrren {
     window.onload = (): void => {
         canvas = <HTMLCanvasElement>document.getElementById("screen");
         reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
+        document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
+        document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
+        document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);
+        document.getElementById("right").addEventListener("click", movementButtonClickEventHandler, false);
+        document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);
+        document.getElementById("randomize").addEventListener("click", randomizeButtonClickEventHandler, false);
         stage = new createjs.Stage(canvas);
         startPreload();
     };
