@@ -16,6 +16,8 @@ var floor;
         { src: "images/right.png", id: "right" },
         { src: "images/rotate.png", id: "rotate" },
         { src: "images/randomize.png", id: "randomize" },
+        { src: "images/randomize_onHover.png", id: "randomizeOnHover" },
+        { src: "images/randomize_onPressed.png", id: "randomizeOnPressed" },
         { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
         { src: "images/Destroyer.png", id: "destroyer" },
         { src: "images/Submarine.png", id: "submarine" },
