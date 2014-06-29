@@ -1,40 +1,9 @@
-﻿/*#screen-container {
-    min-height: 1200px;
-    min-width: 1600px;
-    background-color: skyblue;
-    z-index: -1;
-}
-
-#x-axis {
-    height: 200px;
-    width: 100%;
-    background-color: red;
-}
-
-#y-axis {
-    height: 1000px;
-    width: 200px;
-    background-color: yellow;
-}
-
-#grid {
-    height: 1000px;
-    width: 1500px;
-    margin-top: 200px;
-    float: right;
-}
-
-h1 {
-    margin-left: 200px;
-    margin-top: -100px;
-    font-family: 'Segoe UI';
-    font-size: 150px;
+﻿#holder {
     position: absolute;
+    margin-top: 90px;
+    margin-left: 90px;
+    -moz-transition: margin 1s;
+    -o-transition: margin 1s;
+    -webkit-transition: margin 1s;
+    transition: margin 1s;
 }
-
-h2 {
-    margin-top: -130px;
-    font-family: 'Segoe UI';
-    font-size: 165px;
-    position: absolute;
-}*/

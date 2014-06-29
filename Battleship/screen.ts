@@ -4,12 +4,13 @@
 module scrren {
     "use strict";
 
-    var canvas: HTMLElement;
+    var canvas: HTMLCanvasElement;
     var stage: createjs.Stage;
     var queue: createjs.LoadQueue;
     var shouldUpdate: boolean = true;
     var cells: any[] = [];
-    var ships: Array<Ship> = new Array<Ship>(5);
+    var ships: Array<Ship> = new Array<Ship>(6);
+    var reticle: Reticle;
     var intervalId: any;
     var manifest: Object = [{ src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
                             { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
@@ -31,6 +32,25 @@ module scrren {
             this.row = 0;
             this.column = 0;
             this.isVertical = false;
+        }
+    }
+
+    class Reticle {
+        public reticleElement: HTMLDivElement;
+        public x: number;
+        public y: number;
+
+        constructor(reticleElement: HTMLDivElement) {
+            this.reticleElement = reticleElement;
+            this.x = 0;
+            this.y = 0;
+        }
+
+        public move(x: number, y: number): void {
+            $(this.reticleElement).css("margin-top", (x*200 + 90).toString() + "px");
+            $(this.reticleElement).css("margin-left", (y*200 + 90).toString() + "px");
+            this.x = x;
+            this.y = y;
         }
     }
 
@@ -57,8 +77,10 @@ module scrren {
         ships[2] = new Ship(destroyer1, 2);
         var destroyer2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
         ships[3] = new Ship(destroyer2, 2);
-        var patrolBoat: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
-        ships[4] = new Ship(patrolBoat, 1);
+        var patrolBoat1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
+        ships[4] = new Ship(patrolBoat1, 1);
+        var patrolBoat2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
+        ships[5] = new Ship(patrolBoat2, 1);
 
         var grid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
 
@@ -70,9 +92,7 @@ module scrren {
 
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         randomlyPlaceShips();
-
-        rotate(ships[0]);
-        rotate(ships[0]);
+        reticle.move(Math.floor(Math.random() * 5), Math.floor(Math.random() * 7));
 
         gridContainer.addChild(grid);
         for (var i = 0; i < 5; i++) {
@@ -90,18 +110,24 @@ module scrren {
         console.log(eventinfo.data);
     }
 
+    function cellClickEventHandler(eventinfo: any): void {
+        console.log(eventinfo.currentTarget.x / 200);
+        console.log(eventinfo.currentTarget.y / 200);
+    }
+
     function createGridCells(): any[] {
         var cells: any[] = new Array(5);
         var x, y = 0;
         for (var i = 0; i < 5; i++) {
-            cells[i] = new Array(6);
+            cells[i] = new Array<createjs.Container>(6);
             x = 0;
             for (var j = 0; j < 7; j++) {
                 var cell: createjs.Container = new createjs.Container();
                 cell.x = x;
                 cell.y = y;
                 x += 200;
-                cells[i][j] = cell;
+                cell.addEventListener("click", cellClickEventHandler, false);
+                cells[i][j] = cell;              
             }
             y += 200;
         }
@@ -129,7 +155,7 @@ module scrren {
                 map[i][j] = true;
             }
         }
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 6; i++) {
             if (Math.random() > 0.5) {
                 ships[i].isVertical = false;
             }
@@ -149,7 +175,6 @@ module scrren {
             var y: number;
             var count: number = 0;
             do {
-                count++;
                 if (count > 10) {
                     ships[i].isVertical = !ships[i].isVertical;
                 }
@@ -193,7 +218,8 @@ module scrren {
     window.addEventListener("message", messageEventHandler, false);
 
     window.onload = (): void => {
-        canvas = document.getElementById("screen");
+        canvas = <HTMLCanvasElement>document.getElementById("screen");
+        reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
         stage = new createjs.Stage(canvas);
         startPreload();
     };
