@@ -1,5 +1,6 @@
 ﻿/// <reference path="scripts/typings/jquery/jquery.d.ts" />
 /// <reference path="scripts/typings/createjs/createjs.d.ts" />
+/// <reference path="requestmanager.ts" />
 
 module screen_window {
     "use strict";
@@ -8,12 +9,18 @@ module screen_window {
     var stage: createjs.Stage;
     var queue: createjs.LoadQueue;
     var shouldUpdate: boolean = true;
-    var cells: Array<Array<createjs.Container>> = [];
+    var isCpuTurn: boolean = false;
+    var playerCells: Array<Array<createjs.Container>> = [];
+    var cpuCells: Array<Array<createjs.Container>> = [];
+    var playerGridContainer: createjs.Container;
+    var cpuGridContainer: createjs.Container
     var ships: Array<Ship> = new Array<Ship>(6);
     var map: Array<Array<boolean>>;
     var selectedShip: Ship;
     var reticle: Reticle;
     var intervalId: any;
+    var moves: Array<RequestManager.IMoves> = new Array<RequestManager.IMoves>();;
+    var move: number = 0;
     var manifest: Object = [{ src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
         { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
         { src: "images/Destroyer.png", id: "destroyer" },
@@ -52,8 +59,8 @@ module screen_window {
         }
 
         public move(x: number, y: number): void {
-            $(this.reticleElement).css("margin-top", (x*200 + 90).toString() + "px");
-            $(this.reticleElement).css("margin-left", (y*200 + 90).toString() + "px");
+            $(this.reticleElement).css("margin-top", (x * 200 + 90).toString() + "px");
+            $(this.reticleElement).css("margin-left", (y * 200 + 90).toString() + "px");
             this.x = x;
             this.y = y;
         }
@@ -72,8 +79,19 @@ module screen_window {
         }
     }
 
+    function getBoard(): Array<RequestManager.IBoard> {
+        var data: Array<RequestManager.IBoard> = $.map(ships, (ship, index) => {
+            return { boatlength: ship.length, x: ship.row, y: ship.column, isVertical: ship.isVertical ? 1 : 0 };
+        });
+        return data;
+    }
+
+    function playerTurn() {
+        
+    }
+
     function handleComplete(eventinfo: CustomEvent): void {
-        var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));        
+        var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
         var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
         ships[0] = new Ship(aircraftCarrier, 4);
         ships[0].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(0); }, false);
@@ -93,28 +111,48 @@ module screen_window {
         ships[5] = new Ship(patrolBoat2, 1);
         ships[5].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(5); }, false);
 
-        var grid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
+        var playerGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
+        var cpuGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
 
-        var gridContainer: createjs.Container = new createjs.Container();
-        gridContainer.x = 100;
-        gridContainer.y = 100;
-        gridContainer.addEventListener("click", gridClickEventHandler, false);
+        playerGridContainer = new createjs.Container();
+        playerGridContainer.x = 100;
+        playerGridContainer.y = 100;
+        playerGridContainer.addEventListener("click", gridClickEventHandler, false);
 
-        cells = createGridCells();
+        cpuGridContainer = new createjs.Container();
+        cpuGridContainer.x = 100;
+        cpuGridContainer.y = 100;
+        cpuGridContainer.addEventListener("click", gridClickEventHandler, false);
+
+        playerCells = createGridCells();
+        cpuCells = createGridCells();
 
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         randomlyPlaceShips();
+        var data: Array<RequestManager.IBoard> = getBoard();
+        RequestManager.getMoves(data).done((data) => {
+            moves = data;
+            //playGame(moves);
+        });
+        
         reticle.move(Math.floor(Math.random() * 5), Math.floor(Math.random() * 7));
 
-        gridContainer.addChild(grid);
+        playerGridContainer.addChild(playerGrid);
         for (var i = 0; i < 5; i++) {
             for (var j = 0; j < 7; j++) {
-                gridContainer.addChild(cells[i][j]);
+                playerGridContainer.addChild(playerCells[i][j]);
             }
-        }    
-            
+        }
+
+        cpuGridContainer.addChild(cpuGrid);
+        for (var i = 0; i < 5; i++) {
+            for (var j = 0; j < 7; j++) {
+                cpuGridContainer.addChild(cpuCells[i][j]);
+            }
+        }
+
         stage.addChild(bg);
-        stage.addChild(gridContainer);
+        stage.addChild(playerGridContainer);
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }
@@ -155,9 +193,9 @@ module screen_window {
         setMap(selectedShip, true);
         switch (eventinfo.target.id) {
             case "up":
-                if (selectedShip.row - 1 >= 0 && 
+                if (selectedShip.row - 1 >= 0 &&
                     canShipBePlaced(selectedShip.row - 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
-                    selectedShip.row--;                    
+                    selectedShip.row--;
                 }
                 break;
             case "down":
@@ -172,7 +210,7 @@ module screen_window {
                 break;
             case "left":
                 if (selectedShip.column - 1 >= 0 &&
-                    canShipBePlaced(selectedShip.row, selectedShip.column -1, selectedShip.isVertical, selectedShip.length)) {
+                    canShipBePlaced(selectedShip.row, selectedShip.column - 1, selectedShip.isVertical, selectedShip.length)) {
                     selectedShip.column--;
                 }
                 break;
@@ -193,7 +231,7 @@ module screen_window {
                 break;
         }
         setMap(selectedShip, false);
-        cells[selectedShip.row][selectedShip.column].addChild(selectedShip.shipObject);        
+        playerCells[selectedShip.row][selectedShip.column].addChild(selectedShip.shipObject);
         shouldUpdate = true;
     }
 
@@ -228,10 +266,34 @@ module screen_window {
 
     function shootButtonClickEventHandler(eventinfo: any) {
         if (map[reticle.x][reticle.y]) {
-            cells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+            playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
         }
         else {
-            cells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit")));
+            playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit")));
+        }
+        window.setTimeout(() => { shouldUpdate = true; }, 800);
+    }
+
+    function nextMoveClickEventHandler(eventinfo: any) {
+        try {
+            reticle.move(moves[move].x, moves[move].y);
+            $("#shoot").trigger("click");
+            move++;
+        }
+        catch (e) {
+            console.log("No more moves");
+        }
+    }
+    function switchTurnClickEventHandler(eventinfo: any) {
+        if (!isCpuTurn) {
+            stage.removeChild(playerGridContainer);
+            stage.addChild(cpuGridContainer);
+            isCpuTurn = true;
+        }
+        else {
+            stage.removeChild(cpuGridContainer);
+            stage.addChild(playerGridContainer);
+            isCpuTurn = false;
         }
         shouldUpdate = true;
     }
@@ -247,7 +309,7 @@ module screen_window {
                 cell.x = x;
                 cell.y = y;
                 x += 200;
-                cells[i][j] = cell;              
+                cells[i][j] = cell;
             }
             y += 200;
         }
@@ -261,7 +323,7 @@ module screen_window {
             ship.isVertical = true;
         }
         else {
-            ship.shipObject.x = 0;            
+            ship.shipObject.x = 0;
             ship.shipObject.rotation = 0;
             ship.isVertical = false;
         }
@@ -300,7 +362,7 @@ module screen_window {
                 }
                 x = Math.floor(Math.random() * limitY);
                 y = Math.floor(Math.random() * limitX);
-            }while (!canShipBePlaced(x, y, ships[i].isVertical, ships[i].length));
+            } while (!canShipBePlaced(x, y, ships[i].isVertical, ships[i].length));
             count = 0;
             if (ships[i].isVertical) {
                 for (var j = x; (j < 5) && (j < x + ships[i].length); j++) {
@@ -312,12 +374,12 @@ module screen_window {
                     map[x][j] = false;
                 }
             }
-            cells[x][y].addChild(ships[i].shipObject);
+            playerCells[x][y].addChild(ships[i].shipObject);
             ships[i].row = x;
             ships[i].column = y;
         }
         shouldUpdate = true;
-    } 
+    }
 
     function canShipBePlaced(x: number, y: number, isVertical: boolean, len: number): boolean {
         if (isVertical) {
@@ -326,7 +388,7 @@ module screen_window {
                     return false;
                 }
             }
-            if (i == 5 && x > 5-len) {
+            if (i == 5 && x > 5 - len) {
                 return false;
             }
         }
@@ -336,7 +398,7 @@ module screen_window {
                     return false;
                 }
             }
-            if (i == 7 && y > 7-len) {
+            if (i == 7 && y > 7 - len) {
                 return false;
             }
         }
@@ -360,6 +422,8 @@ module screen_window {
         document.getElementById("reticle-left").addEventListener("click", reticleButtonClickEventHandler, false);
         document.getElementById("reticle-right").addEventListener("click", reticleButtonClickEventHandler, false);
         document.getElementById("shoot").addEventListener("click", shootButtonClickEventHandler, false);
+        document.getElementById("next-move").addEventListener("click", nextMoveClickEventHandler, false);
+        document.getElementById("switch-turn").addEventListener("click", switchTurnClickEventHandler, false);
         stage = new createjs.Stage(canvas);
         startPreload();
     };
