@@ -5,4 +5,194 @@
     -o-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
+	font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #FFF;
 }
+
+
+#floor {
+    position: absolute;
+    top: 0;
+    background-color: darkslateblue;
+    width: 1200px;
+    height: 1600px;
+    margin: 0 auto;
+    background-image: url("/images/background.jpg");
+}
+
+.clear {
+    clear: both;
+}
+
+.block {
+    display: block;
+    float: left;
+}
+
+.block1 {
+    display: block;
+    position: relative;
+    float: left;
+}
+
+.block2 {
+    display: block;
+    position: relative;
+    float: left;
+}
+
+.bleed {
+    background: transparent center center no-repeat;
+    background-size: cover;
+}
+
+.green {
+    color: rgb(75,240,157);
+}
+
+.panel {
+    background-color: rgba(0,0,0,0.3);
+    height: 35px;
+    line-height: 35px;
+    padding: 10px 20px;
+}
+
+    .panel .title,
+    .panel .turn {
+        height: 60px;
+        font-size: 16pt;
+        font-weight: 800;
+        color: #FFF;
+        text-transform: uppercase;
+    }
+
+    .panel .turn {
+        float: right !important;
+    }
+
+.content {
+    height: 1260px;
+    padding: 0px 20px;
+}
+
+.scenario {
+    position: relative;
+    height: 1000px;
+    margin-top: 40px;   
+    overflow: hidden; 
+}
+
+.data {
+    position: relative;
+    width: 30%;
+    height: 200px;
+}
+
+.messages {
+    position: relative;
+    width: 70%;
+    height: 200px;
+}
+
+    .messages .callout {
+        position: absolute;
+        top: 10%;
+        right: 5%;
+        width: 100%;
+        height: 70%;
+        border-radius: 10px;
+        border: solid 1px rgba(255,255,255,0.6);
+        font-weight: 400;
+        padding: 20px;
+        font-size: 16pt;
+    }
+
+    .messages .image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 200px;
+        text-align: center;
+        line-height: 200px;
+        height: 200px;
+        background-image: url("/Images/alien_general_by_Mclean_Kun-200.png");
+        border-radius: 100%;
+        border: solid 1px rgba(255,255,255,0.6);
+        font-weight: 400;
+        padding: 10px;
+        font-size: 16pt;
+    }
+
+.hint {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    height: 40px;
+    padding: 10px 20px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 16pt;
+}
+
+.safezone {
+    height: 250px;
+}
+
+    .safezone .square,
+    .safezone .wide {
+        background: transparent center center no-repeat;
+        background-size: 100px; 
+    }
+
+    .safezone .square {
+        width: 150px;
+        height: 250px;
+    }
+
+    .safezone .wide {
+        width: 500px;
+        height: 250px;
+    }   
+   
+
+    #stand {
+        background-image: url("/Images/Foot Print.png");
+        background-size: contain;
+    }
+
+    #exit {
+        background-image: url("/Images/Previous.png");
+    }
+
+    #randomize {
+        background-image: url("/Images/Cloud-Thunder.png");
+        float: left;
+    }
+
+    #rotate {
+        background-image: url("/images/rotate.png");
+    }
+
+    #fire {
+        background-image: url("/images/up.png");
+    }
+
+.ship {
+    margin-bottom: 50px;
+    display: block;    
+}
+
+    .ship .info {
+        font-size: 16pt;
+        padding: 20px;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-top: 30px;        
+        margin-left: 40px;
+    }
+
+        .ship:nth-child(4) .info {
+            margin-top: -10px;
+        }
