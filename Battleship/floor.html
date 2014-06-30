@@ -1,15 +1,37 @@
 ﻿<!DOCTYPE html>
+<html data-ng-app="Battleship.Floor">
+<head>        
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship Floor</title>
 
-<html>
-<head>
-    <title></title>
-    <link href="css/floor.css" rel="stylesheet" />
-    <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
-    <script src="Scripts/jquery-2.1.1.min.js"></script>
-    <script src="communicator.js"></script>
-    <script src="floor.js"></script>
+    <link rel="stylesheet" href="css/floor.css" type="text/css" />    
 </head>
 <body>
-    <canvas id="floor" height='1600' width='1200'></canvas>
+    <div id="floor" class="bleed">
+        <div class="panel">
+            <div class="title block">{{ title }}</div>
+            <div class="turn block">{{ moves }}</div>
+        </div>
+        <div class="clear"></div>
+        <div class="content" data-ng-view></div>
+        <div class="panel safezone">
+            <div class="block square" id="exit"></div>
+            <div class="block1 square" id="rotate"></div> 
+            <div class="block wide" id="stand"></div>
+            <div class="block2 square" id="fire"></div>
+            <div class="block square" id="randomize"></div> 
+        </div>
+    </div>
+
+    <script src="Scripts/jquery-2.1.1.min.js"></script>
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/angular-route.min.js"></script>
+
+    <script src="ts/Ship.js"></script>
+    <script src="ts/placementcontroller.js"></script>
+    <script src="ts/directives.js"></script>
+    <script src="ts/app.js"></script>
 </body>
 </html>
