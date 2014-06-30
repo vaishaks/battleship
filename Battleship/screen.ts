@@ -291,7 +291,7 @@ module scrren {
                     return false;
                 }
             }
-            if (i == 5 && x == 4) {
+            if (i == 5 && x > 5-len) {
                 return false;
             }
         }
@@ -301,7 +301,7 @@ module scrren {
                     return false;
                 }
             }
-            if (i == 7 && y == 6) {
+            if (i == 7 && y > 7-len) {
                 return false;
             }
         }
