@@ -1,10 +1,6 @@
 ﻿body {
     /*Change to 90 degrees for ripple*/
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+    transform: rotate(90deg);
 	font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
@@ -14,11 +10,12 @@
 
 #floor {
     position: absolute;
-    top: 0;
+    left: 800px;
+    bottom: -800px;
     background-color: darkslateblue;
     width: 1200px;
     height: 1600px;
-    margin: 0 auto;
+    margin: 0;
     background-image: url("/images/background.jpg");
 }
 
