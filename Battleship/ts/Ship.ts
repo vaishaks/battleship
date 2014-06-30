@@ -21,4 +21,4 @@
         this.isDestroyed = this.damageTaken === length;
         return this.isDestroyed;
     }
-} 
+}
