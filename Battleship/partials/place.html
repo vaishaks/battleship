@@ -1,11 +1,11 @@
 ﻿<div data-ng-include="'partials/message.html'"></div>
 <div class="scenario">
     <div class="ship" data-ng-repeat="ship in ships" data-type="{{ ship.name }}">
-        <img class="image bleed block" id="{{ ship.id }}"  data-ng-src="{{ ship.image }}"/>
+        <img class="image bleed block" id="a{{ ship.id }}"  data-ng-src="{{ ship.image }}"/>
         <div class="info block">
             <div class="name green">{{ ship.name }}</div>
             <div class="hitpoints">HIT POINTS: {{ ship.length }}</div>
-            <div class="count">INVENTORY: {{ ship.inventory }}</div>
+            <div class="count" id="inventory">INVENTORY: {{ ship.inventory }}</div>
         </div>
         <div class="clear"></div>
     </div>       

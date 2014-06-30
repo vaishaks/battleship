@@ -64,7 +64,11 @@ window.onload = () => {
     exit.addEventListener("click", function () { console.log("exit"); }, false);
     rotate.addEventListener("click", function () { console.log("something"); }, false);
     randomize.addEventListener("click", function () { console.log("something"); }, false);
-    fire.addEventListener("click", function () { console.log("something"); }, false);
+    fire.addEventListener("click", function () {
+        console.log("done/fire");
+
+        document.getElementById('acarrier').innerHTML = '<div class="count" id="inventory">INVENTORY: {{ ship.inventory-1}}</div>';
+    }, false);
  }
 
 var app = new Global();
