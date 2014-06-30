@@ -1,7 +1,7 @@
 ﻿/// <reference path="scripts/typings/jquery/jquery.d.ts" />
 /// <reference path="scripts/typings/createjs/createjs.d.ts" />
 
-module scrren {
+module screen_window {
     "use strict";
 
     var canvas: HTMLCanvasElement;
@@ -227,7 +227,12 @@ module scrren {
     }
 
     function shootButtonClickEventHandler(eventinfo: any) {
-        cells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+        if (map[reticle.x][reticle.y]) {
+            cells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+        }
+        else {
+            cells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit")));
+        }
         shouldUpdate = true;
     }
 
