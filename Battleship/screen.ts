@@ -201,6 +201,36 @@ module scrren {
         randomlyPlaceShips();
     }
 
+    function reticleButtonClickEventHandler(eventinfo: any) {
+        switch (eventinfo.target.id) {
+            case "reticle-up":
+                if (reticle.x - 1 >= 0) {
+                    reticle.move(reticle.x - 1, reticle.y);
+                }
+                break;
+            case "reticle-down":
+                if (reticle.x + 1 < 5) {
+                    reticle.move(reticle.x + 1, reticle.y);
+                }
+                break;
+            case "reticle-left":
+                if (reticle.y - 1 >= 0) {
+                    reticle.move(reticle.x, reticle.y - 1);
+                }
+                break;
+            case "reticle-right":
+                if (reticle.y + 1 < 7) {
+                    reticle.move(reticle.x, reticle.y + 1);
+                }
+                break;
+        }
+    }
+
+    function shootButtonClickEventHandler(eventinfo: any) {
+        cells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+        shouldUpdate = true;
+    }
+
     function createGridCells(): any[] {
         var cells: any[] = new Array(5);
         var x, y = 0;
@@ -320,6 +350,11 @@ module scrren {
         document.getElementById("right").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("randomize").addEventListener("click", randomizeButtonClickEventHandler, false);
+        document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-down").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-left").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-right").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("shoot").addEventListener("click", shootButtonClickEventHandler, false);
         stage = new createjs.Stage(canvas);
         startPreload();
     };

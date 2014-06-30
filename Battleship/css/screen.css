@@ -2,8 +2,8 @@
     position: absolute;
     margin-top: 90px;
     margin-left: 90px;
-    -moz-transition: margin 1s;
-    -o-transition: margin 1s;
-    -webkit-transition: margin 1s;
-    transition: margin 1s;
+    -moz-transition: margin 0.7s;
+    -o-transition: margin 0.7s;
+    -webkit-transition: margin 0.7s;
+    transition: margin 0.7s;
 }
