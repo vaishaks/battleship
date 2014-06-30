@@ -37,6 +37,7 @@
     <Content Include="images\Foot Print.png" />
     <Content Include="images\grid.png" />
     <Content Include="images\hit.png" />
+    <Content Include="images\hit_us.png" />
     <Content Include="images\left.png" />
     <Content Include="images\miss.png" />
     <Content Include="images\panelDown.png" />
