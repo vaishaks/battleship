@@ -34,6 +34,11 @@ class Global {
                 controller: "PlacementContoller"
             });
 
+            routes.when('/alien', {
+                templateUrl: url + 'place.html',
+                controller: "alienController"
+            });
+
             routes.otherwise({
                 redirectTo: '/place'
             });
@@ -54,6 +59,14 @@ class Global {
 		Global.ships.push(new Ship("Boat", "images/patrol boat.png", 2, 1, "boat"));
         //Global.ships.push(new Ship("Boat 2", "images/patrol boat.png", 1, 1, "boat2"));
     }
+
+    LoadSpritesAlien() {
+        Global.ships = new Array<Ship>();
+        Global.ships.push(new Ship("alienShip4", "images/AlienShip4.png", 1, 4, "alienShip4"));
+        Global.ships.push(new Ship("alienShip3", "images/AlienShip3.png", 1, 3, "alienShip3"));
+        Global.ships.push(new Ship("alienShip2", "images/AlienShip2.png", 2, 2, "alienShip2"));
+        Global.ships.push(new Ship("alienShip1", "images/AlienShip1.png", 2, 1, "alienShip1"));
+    }
 }
 
 window.onload = () => {
@@ -62,12 +75,12 @@ window.onload = () => {
     var randomize = document.getElementById("randomize");
     var fire = document.getElementById("fire");
     exit.addEventListener("click", function () { console.log("exit"); }, false);
-    rotate.addEventListener("click", function () { console.log("something"); }, false);
-    randomize.addEventListener("click", function () { console.log("something"); }, false);
+    rotate.addEventListener("click", function () { console.log("rotate"); }, false);
+    randomize.addEventListener("click", function () { console.log("randomize"); }, false);
     fire.addEventListener("click", function () {
         console.log("done/fire");
 
-        document.getElementById('acarrier').innerHTML = '<div class="count" id="inventory">INVENTORY: {{ ship.inventory-1}}</div>';
+        //document.getElementById('acarrier').innerHTML = '<div class="count" id="inventory">INVENTORY: {{ ship.inventory-1}}</div>';
     }, false);
  }
 

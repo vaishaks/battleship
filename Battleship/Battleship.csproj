@@ -34,6 +34,7 @@
     <Content Include="images\Destroyer.png" />
     <Content Include="images\down.png" />
     <Content Include="images\explosion.png" />
+    <Content Include="images\fire.png" />
     <Content Include="images\Foot Print.png" />
     <Content Include="images\grid.png" />
     <Content Include="images\hit.png" />
