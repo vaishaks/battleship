@@ -8,15 +8,15 @@ module screen_window {
     var stage: createjs.Stage;
     var queue: createjs.LoadQueue;
     var shouldUpdate: boolean = true;
-    var isCpuTurn: boolean = false;
+    var isCpuTurn: boolean = true;
     var playerCells: Array<Array<createjs.Container>> = [];
     var cpuCells: Array<Array<createjs.Container>> = [];
     var playerGridContainer: createjs.Container;
     var cpuGridContainer: createjs.Container
     var playerShips: Array<Ship> = new Array<Ship>(6);
     var cpuShips: Ship[] = new Array<Ship>(6);
-    var playerMap: boolean[][];
-    var cpuMap: boolean[][];
+    var playerMap: number[][];
+    var cpuMap: number[][];
     var selectedShip: Ship;
     var reticle: Reticle;
     var intervalId: any;
@@ -31,7 +31,8 @@ module screen_window {
         { src: "images/explosion.png", id: "explosion" },
         { src: "images/hit.png", id: "hit" },
         { src: "images/miss.png", id: "miss" },
-        { src: "images/hit_us.png", id: "hit_us" }];
+        { src: "images/hit_us.png", id: "hit_us" },
+        { src: "images/spaceship.png", id: "spaceship" }];
 
     class Ship {
         public shipObject: createjs.Bitmap;
@@ -39,13 +40,15 @@ module screen_window {
         public row: number;
         public column: number;
         public isVertical: boolean;
+        public id: number;
 
-        constructor(shipObject: createjs.Bitmap, length: number) {
+        constructor(shipObject: createjs.Bitmap, length: number, id: number) {
             this.shipObject = shipObject;
             this.length = length;
             this.row = 0;
             this.column = 0;
             this.isVertical = false;
+            this.id = id;
         }
     }
 
@@ -95,31 +98,31 @@ module screen_window {
     function handleComplete(eventinfo: CustomEvent): void {
         var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
         var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
-        playerShips[0] = new Ship(aircraftCarrier, 4);
+        playerShips[0] = new Ship(aircraftCarrier, 4, 0);
         playerShips[0].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(0); }, false);
         var submarine: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("submarine"));
-        playerShips[1] = new Ship(submarine, 3);
+        playerShips[1] = new Ship(submarine, 3, 1);
         playerShips[1].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(1); }, false);
         var destroyer1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
-        playerShips[2] = new Ship(destroyer1, 2);
+        playerShips[2] = new Ship(destroyer1, 2, 2);
         playerShips[2].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(2); }, false);
         var destroyer2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
-        playerShips[3] = new Ship(destroyer2, 2);
+        playerShips[3] = new Ship(destroyer2, 2, 3);
         playerShips[3].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(3); }, false);
         var patrolBoat1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
-        playerShips[4] = new Ship(patrolBoat1, 1);
+        playerShips[4] = new Ship(patrolBoat1, 1, 4);
         playerShips[4].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(4); }, false);
         var patrolBoat2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
-        playerShips[5] = new Ship(patrolBoat2, 1);
+        playerShips[5] = new Ship(patrolBoat2, 1, 5);
         playerShips[5].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(5); }, false);
 
         var hit_us: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us"));
-        cpuShips[0] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 4);
-        cpuShips[1] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 3);
-        cpuShips[2] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 2);
-        cpuShips[3] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 2);
-        cpuShips[4] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 1);
-        cpuShips[5] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 1);
+        cpuShips[0] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 4, 0);
+        cpuShips[1] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 3, 1);
+        cpuShips[2] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 2, 2);
+        cpuShips[3] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 2, 3);
+        cpuShips[4] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 1, 4);
+        cpuShips[5] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 1, 5);
 
         var playerGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
         var cpuGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
@@ -185,7 +188,7 @@ module screen_window {
         selectedShip = playerShips[shipId];
     }
 
-    function setMap(ship: Ship, flag: boolean): void {
+    function setMap(ship: Ship, flag: number): void {
         if (ship.isVertical) {
             for (var j = ship.row; (j < 5) && (j < ship.row + ship.length); j++) {
                 playerMap[j][ship.column] = flag;
@@ -202,7 +205,7 @@ module screen_window {
         if (selectedShip == null) {
             return;
         }
-        setMap(selectedShip, true);
+        setMap(selectedShip, -1);
         switch (eventinfo.target.id) {
             case "up":
                 if (selectedShip.row - 1 >= 0 &&
@@ -242,7 +245,7 @@ module screen_window {
                 }
                 break;
         }
-        setMap(selectedShip, false);
+        setMap(selectedShip, selectedShip.id);
         playerCells[selectedShip.row][selectedShip.column].addChild(selectedShip.shipObject);
         shouldUpdate = true;
     }
@@ -277,11 +280,29 @@ module screen_window {
     }
 
     function shootButtonClickEventHandler(eventinfo: any) {
-        if (playerMap[reticle.x][reticle.y]) {
-            playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+        if (isCpuTurn) {
+            if (playerMap[reticle.x][reticle.y] == -1) {
+                playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+            }
+            else {
+                playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")));
+                playerShips[playerMap[reticle.x][reticle.y]].length--;
+                if (playerShips[playerMap[reticle.x][reticle.y]].length === 0) {
+                    console.log("Ship with id " + playerMap[reticle.x][reticle.y] + "sunk!");
+                }
+            }
         }
         else {
-            playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit")));
+            if (cpuMap[reticle.x][reticle.y] == -1) {
+                cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+            }
+            else {
+                cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit")));
+                cpuShips[cpuMap[reticle.x][reticle.y]].length--;
+                if (cpuShips[cpuMap[reticle.x][reticle.y]].length === 0) {
+                    console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + "sunk!");
+                }
+            }
         }
         window.setTimeout(() => { shouldUpdate = true; }, 800);
     }
@@ -297,15 +318,15 @@ module screen_window {
         }
     }
     function switchTurnClickEventHandler(eventinfo: any) {
-        if (!isCpuTurn) {
+        if (isCpuTurn) {
             stage.removeChild(playerGridContainer);
             stage.addChild(cpuGridContainer);
-            isCpuTurn = true;
+            isCpuTurn = false;
         }
         else {
             stage.removeChild(cpuGridContainer);
             stage.addChild(playerGridContainer);
-            isCpuTurn = false;
+            isCpuTurn = true;
         }
         shouldUpdate = true;
     }
@@ -341,13 +362,13 @@ module screen_window {
         }
     }
 
-    function randomlyPlaceShips(ships: Ship[], cells: createjs.Container[][]): boolean[][] {
-        var map: boolean[][] = new Array(5);
+    function randomlyPlaceShips(ships: Ship[], cells: createjs.Container[][]): number[][] {
+        var map: number[][] = new Array(5);
 
         for (var i = 0; i < 5; i++) {
             map[i] = new Array(7);
             for (var j = 0; j < 7; j++) {
-                map[i][j] = true;
+                map[i][j] = -1;
             }
         }
         for (var i = 0; i < 6; i++) {
@@ -379,12 +400,12 @@ module screen_window {
             count = 0;
             if (ships[i].isVertical) {
                 for (var j = x; (j < 5) && (j < x + ships[i].length); j++) {
-                    map[j][y] = false
+                    map[j][y] = i;
                 }
             }
             else {
                 for (var j = y; (j < 7) && (j < y + ships[i].length); j++) {
-                    map[x][j] = false;
+                    map[x][j] = i;
                 }
             }
             cells[x][y].addChild(ships[i].shipObject);
@@ -395,28 +416,27 @@ module screen_window {
         return map;
     }
 
-    function canShipBePlaced(map: boolean[][], x: number, y: number, isVertical: boolean, len: number): boolean {
+    function canShipBePlaced(map: number[][], x: number, y: number, isVertical: boolean, len: number): boolean {
         if (isVertical) {
             for (var i = x; (i < 5) && (i < x + len); i++) {
-                if (map[i][y] == false) {
+                if (map[i][y] !== -1) {
                     return false;
                 }
             }
-            if (i == 5 && x > 5 - len) {
+            if (i === 5 && x > 5 - len) {
                 return false;
             }
         }
         else {
             for (var i = y; (i < 7) && (i < y + len); i++) {
-                if (map[x][i] == false) {
+                if (map[x][i] !== -1) {
                     return false;
                 }
             }
-            if (i == 7 && y > 7 - len) {
+            if (i === 7 && y > 7 - len) {
                 return false;
             }
         }
-
         return true;
     }
 
