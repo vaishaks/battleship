@@ -1,28 +1,30 @@
 ﻿/// <reference path="_references.ts" />
 /// <reference path="requestmanager.ts" />
-
-module screen_window {
+var screen_window;
+(function (screen_window) {
     "use strict";
 
-    var canvas: HTMLCanvasElement;
-    var stage: createjs.Stage;
-    var queue: createjs.LoadQueue;
-    var shouldUpdate: boolean = true;
-    var isCpuTurn: boolean = true;
-    var playerCells: Array<Array<createjs.Container>> = [];
-    var cpuCells: Array<Array<createjs.Container>> = [];
-    var playerGridContainer: createjs.Container;
-    var cpuGridContainer: createjs.Container
-    var playerShips: Array<Ship> = new Array<Ship>(6);
-    var cpuShips: Ship[] = new Array<Ship>(6);
-    var playerMap: number[][];
-    var cpuMap: number[][];
-    var selectedShip: Ship;
-    var reticle: Reticle;
-    var intervalId: any;
-    var moves: Array<RequestManager.IMoves> = new Array<RequestManager.IMoves>();;
-    var move: number = 0;
-    var manifest: Object = [{ src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
+    var canvas;
+    var stage;
+    var queue;
+    var shouldUpdate = true;
+    var isCpuTurn = true;
+    var playerCells = [];
+    var cpuCells = [];
+    var playerGridContainer;
+    var cpuGridContainer;
+    var playerShips = new Array(6);
+    var cpuShips = new Array(6);
+    var playerMap;
+    var cpuMap;
+    var selectedShip;
+    var reticle;
+    var intervalId;
+    var moves = new Array();
+    ;
+    var move = 0;
+    var manifest = [
+        { src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
         { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
         { src: "images/Destroyer.png", id: "destroyer" },
         { src: "images/Submarine.png", id: "submarine" },
@@ -35,15 +37,8 @@ module screen_window {
         { src: "images/spaceship.png", id: "spaceship" },
         { src: "images/explosion.png", id: "explosion" }];
 
-    class Ship {
-        public shipObject: createjs.Bitmap;
-        public length: number;
-        public row: number;
-        public column: number;
-        public isVertical: boolean;
-        public id: number;
-
-        constructor(shipObject: createjs.Bitmap, length: number, id: number) {
+    var Ship = (function () {
+        function Ship(shipObject, length, id) {
             this.shipObject = shipObject;
             this.length = length;
             this.row = 0;
@@ -51,82 +46,90 @@ module screen_window {
             this.isVertical = false;
             this.id = id;
         }
-    }
+        return Ship;
+    })();
 
-    class Reticle {
-        public reticleElement: HTMLDivElement;
-        public x: number;
-        public y: number;
-
-        constructor(reticleElement: HTMLDivElement) {
+    var Reticle = (function () {
+        function Reticle(reticleElement) {
             this.reticleElement = reticleElement;
             this.x = 0;
             this.y = 0;
         }
-
-        public move(x: number, y: number): void {
+        Reticle.prototype.move = function (x, y) {
             $(this.reticleElement).css("margin-top", (x * 200 + 90).toString() + "px");
             $(this.reticleElement).css("margin-left", (y * 200 + 90).toString() + "px");
             this.x = x;
             this.y = y;
-        }
-    }
+        };
+        return Reticle;
+    })();
 
-    function startPreload(): void {
+    function startPreload() {
         queue = new createjs.LoadQueue(false);
         queue.addEventListener("complete", handleComplete, false);
         queue.loadManifest(manifest);
     }
 
-    function update(): void {
+    function update() {
         if (shouldUpdate) {
             shouldUpdate = false;
             stage.update();
         }
     }
 
-    function getBoard(): Array<RequestManager.IBoard> {
-        var data: Array<RequestManager.IBoard> = $.map(playerShips, (ship, index) => {
+    function getBoard() {
+        var data = $.map(playerShips, function (ship, index) {
             return { boatlength: ship.length, x: ship.row, y: ship.column, isVertical: ship.isVertical ? 1 : 0 };
         });
         return data;
     }
 
     function playerTurn() {
-        
     }
 
-    function handleComplete(eventinfo: CustomEvent): void {
-        var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
-        var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
+    function handleComplete(eventinfo) {
+        var bg = new createjs.Bitmap(queue.getResult("backgroundScreen"));
+        var aircraftCarrier = new createjs.Bitmap(queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
-        playerShips[0].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(0); }, false);
-        var submarine: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("submarine"));
+        playerShips[0].shipObject.addEventListener("click", function (eventinfo) {
+            shipClickEventHandler(0);
+        }, false);
+        var submarine = new createjs.Bitmap(queue.getResult("submarine"));
         playerShips[1] = new Ship(submarine, 3, 1);
-        playerShips[1].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(1); }, false);
-        var destroyer1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
+        playerShips[1].shipObject.addEventListener("click", function (eventinfo) {
+            shipClickEventHandler(1);
+        }, false);
+        var destroyer1 = new createjs.Bitmap(queue.getResult("destroyer"));
         playerShips[2] = new Ship(destroyer1, 2, 2);
-        playerShips[2].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(2); }, false);
-        var destroyer2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("destroyer"));
+        playerShips[2].shipObject.addEventListener("click", function (eventinfo) {
+            shipClickEventHandler(2);
+        }, false);
+        var destroyer2 = new createjs.Bitmap(queue.getResult("destroyer"));
         playerShips[3] = new Ship(destroyer2, 2, 3);
-        playerShips[3].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(3); }, false);
-        var patrolBoat1: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
+        playerShips[3].shipObject.addEventListener("click", function (eventinfo) {
+            shipClickEventHandler(3);
+        }, false);
+        var patrolBoat1 = new createjs.Bitmap(queue.getResult("patrolboat"));
         playerShips[4] = new Ship(patrolBoat1, 1, 4);
-        playerShips[4].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(4); }, false);
-        var patrolBoat2: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("patrolboat"));
+        playerShips[4].shipObject.addEventListener("click", function (eventinfo) {
+            shipClickEventHandler(4);
+        }, false);
+        var patrolBoat2 = new createjs.Bitmap(queue.getResult("patrolboat"));
         playerShips[5] = new Ship(patrolBoat2, 1, 5);
-        playerShips[5].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(5); }, false);
+        playerShips[5].shipObject.addEventListener("click", function (eventinfo) {
+            shipClickEventHandler(5);
+        }, false);
 
-        var hit_us: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us"));
-        cpuShips[0] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 4, 0);
-        cpuShips[1] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 3, 1);
-        cpuShips[2] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 2, 2);
-        cpuShips[3] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 2, 3);
-        cpuShips[4] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 1, 4);
-        cpuShips[5] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 1, 5);
+        var hit_us = new createjs.Bitmap(queue.getResult("hit_us"));
+        cpuShips[0] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 4, 0);
+        cpuShips[1] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 3, 1);
+        cpuShips[2] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 2, 2);
+        cpuShips[3] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 2, 3);
+        cpuShips[4] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 1, 4);
+        cpuShips[5] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 1, 5);
 
-        var playerGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
-        var cpuGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
+        var playerGrid = new createjs.Bitmap(queue.getResult("grid"));
+        var cpuGrid = new createjs.Bitmap(queue.getResult("grid"));
 
         playerGridContainer = new createjs.Container();
         playerGridContainer.x = 100;
@@ -143,14 +146,14 @@ module screen_window {
 
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         playerMap = randomlyPlaceShips(playerShips, playerCells);
-        var data: Array<RequestManager.IBoard> = getBoard();
-        RequestManager.getMoves(data).done((data) => {
+        var data = getBoard();
+        RequestManager.getMoves(data).done(function (data) {
             moves = data;
             //playGame(moves);
         });
 
         cpuMap = randomlyPlaceShips(cpuShips, cpuCells);
-        
+
         reticle.move(Math.floor(Math.random() * 5), Math.floor(Math.random() * 7));
 
         playerGridContainer.addChild(playerGrid);
@@ -173,70 +176,62 @@ module screen_window {
         createjs.Ticker.addEventListener("tick", update, false);
     }
 
-    function messageEventHandler(eventinfo: any): void {
+    function messageEventHandler(eventinfo) {
         console.log(eventinfo.data);
     }
 
-    function gridClickEventHandler(eventinfo: any): void {
-        var x: number = Math.floor((eventinfo.rawY - 100) / 200);
-        var y: number = Math.floor((eventinfo.rawX - 100) / 200);
+    function gridClickEventHandler(eventinfo) {
+        var x = Math.floor((eventinfo.rawY - 100) / 200);
+        var y = Math.floor((eventinfo.rawX - 100) / 200);
+
         //cells[x][y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
         shouldUpdate = true;
     }
 
-    function shipClickEventHandler(shipId: number): void {
+    function shipClickEventHandler(shipId) {
         console.log(playerShips[shipId]);
         selectedShip = playerShips[shipId];
     }
 
-    function setMap(ship: Ship, flag: number): void {
+    function setMap(ship, flag) {
         if (ship.isVertical) {
             for (var j = ship.row; (j < 5) && (j < ship.row + ship.length); j++) {
                 playerMap[j][ship.column] = flag;
             }
-        }
-        else {
+        } else {
             for (var j = ship.column; (j < 7) && (j < ship.column + ship.length); j++) {
                 playerMap[ship.row][j] = flag;
             }
         }
     }
 
-    function movementButtonClickEventHandler(eventinfo: any) {
+    function movementButtonClickEventHandler(eventinfo) {
         if (selectedShip == null) {
             return;
         }
         setMap(selectedShip, -1);
         switch (eventinfo.target.id) {
             case "up":
-                if (selectedShip.row - 1 >= 0 &&
-                    canShipBePlaced(playerMap, selectedShip.row - 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
+                if (selectedShip.row - 1 >= 0 && canShipBePlaced(playerMap, selectedShip.row - 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
                     selectedShip.row--;
                 }
                 break;
             case "down":
-                if (!selectedShip.isVertical && (selectedShip.row + 1) < 5 &&
-                    canShipBePlaced(playerMap, selectedShip.row + 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
+                if (!selectedShip.isVertical && (selectedShip.row + 1) < 5 && canShipBePlaced(playerMap, selectedShip.row + 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
                     selectedShip.row++;
-                }
-                else if (selectedShip.row + selectedShip.length < 5 &&
-                    canShipBePlaced(playerMap, selectedShip.row + 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
+                } else if (selectedShip.row + selectedShip.length < 5 && canShipBePlaced(playerMap, selectedShip.row + 1, selectedShip.column, selectedShip.isVertical, selectedShip.length)) {
                     selectedShip.row++;
                 }
                 break;
             case "left":
-                if (selectedShip.column - 1 >= 0 &&
-                    canShipBePlaced(playerMap, selectedShip.row, selectedShip.column - 1, selectedShip.isVertical, selectedShip.length)) {
+                if (selectedShip.column - 1 >= 0 && canShipBePlaced(playerMap, selectedShip.row, selectedShip.column - 1, selectedShip.isVertical, selectedShip.length)) {
                     selectedShip.column--;
                 }
                 break;
             case "right":
-                if (selectedShip.isVertical && (selectedShip.column + 1) < 7 &&
-                    canShipBePlaced(playerMap, selectedShip.row, selectedShip.column + 1, selectedShip.isVertical, selectedShip.length)) {
+                if (selectedShip.isVertical && (selectedShip.column + 1) < 7 && canShipBePlaced(playerMap, selectedShip.row, selectedShip.column + 1, selectedShip.isVertical, selectedShip.length)) {
                     selectedShip.column++;
-                }
-                else if (selectedShip.column + selectedShip.length < 7 &&
-                    canShipBePlaced(playerMap, selectedShip.row, selectedShip.column + 1, selectedShip.isVertical, selectedShip.length)) {
+                } else if (selectedShip.column + selectedShip.length < 7 && canShipBePlaced(playerMap, selectedShip.row, selectedShip.column + 1, selectedShip.isVertical, selectedShip.length)) {
                     selectedShip.column++;
                 }
                 break;
@@ -251,11 +246,11 @@ module screen_window {
         shouldUpdate = true;
     }
 
-    function randomizeButtonClickEventHandler(eventinfo: any) {
+    function randomizeButtonClickEventHandler(eventinfo) {
         playerMap = randomlyPlaceShips(playerShips, playerCells);
     }
 
-    function reticleButtonClickEventHandler(eventinfo: any) {
+    function reticleButtonClickEventHandler(eventinfo) {
         switch (eventinfo.target.id) {
             case "reticle-up":
                 if (reticle.x - 1 >= 0) {
@@ -280,51 +275,48 @@ module screen_window {
         }
     }
 
-    function shootButtonClickEventHandler(eventinfo: any) {
+    function shootButtonClickEventHandler(eventinfo) {
         if (isCpuTurn) {
             if (playerMap[reticle.x][reticle.y] == -1) {
-                playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
-            }
-            else {
-                playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")));
+                playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("miss")));
+            } else {
+                playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("hit_us")));
                 playerShips[playerMap[reticle.x][reticle.y]].length--;
                 if (playerShips[playerMap[reticle.x][reticle.y]].length === 0) {
                     console.log("Ship with id " + playerMap[reticle.x][reticle.y] + "sunk!");
                 }
             }
-        }
-        else {
+        } else {
             if (cpuMap[reticle.x][reticle.y] == -1) {
-                cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
-            }
-            else {
-                cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit")));
+                cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("miss")));
+            } else {
+                cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("hit")));
                 cpuShips[cpuMap[reticle.x][reticle.y]].length--;
                 if (cpuShips[cpuMap[reticle.x][reticle.y]].length === 0) {
                     console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + "sunk!");
                 }
             }
         }
-        window.setTimeout(() => { shouldUpdate = true; }, 800);
+        window.setTimeout(function () {
+            shouldUpdate = true;
+        }, 800);
     }
 
-    function nextMoveClickEventHandler(eventinfo: any) {
-        try {
+    function nextMoveClickEventHandler(eventinfo) {
+        try  {
             reticle.move(moves[move].x, moves[move].y);
             $("#shoot").trigger("click");
             move++;
-        }
-        catch (e) {
+        } catch (e) {
             console.log("No more moves");
         }
     }
-    function switchTurnClickEventHandler(eventinfo: any) {
+    function switchTurnClickEventHandler(eventinfo) {
         if (isCpuTurn) {
             stage.removeChild(playerGridContainer);
             stage.addChild(cpuGridContainer);
             isCpuTurn = false;
-        }
-        else {
+        } else {
             stage.removeChild(cpuGridContainer);
             stage.addChild(playerGridContainer);
             isCpuTurn = true;
@@ -332,14 +324,14 @@ module screen_window {
         shouldUpdate = true;
     }
 
-    function createGridCells(): any[] {
-        var cells: any[] = new Array(5);
+    function createGridCells() {
+        var cells = new Array(5);
         var x, y = 0;
         for (var i = 0; i < 5; i++) {
-            cells[i] = new Array<createjs.Container>(6);
+            cells[i] = new Array(6);
             x = 0;
             for (var j = 0; j < 7; j++) {
-                var cell: createjs.Container = new createjs.Container();
+                var cell = new createjs.Container();
                 cell.x = x;
                 cell.y = y;
                 x += 200;
@@ -350,21 +342,20 @@ module screen_window {
         return cells;
     }
 
-    function rotate(ship: Ship): void {
+    function rotate(ship) {
         if (!ship.isVertical) {
             ship.shipObject.x = 200;
             ship.shipObject.rotation = 90;
             ship.isVertical = true;
-        }
-        else {
+        } else {
             ship.shipObject.x = 0;
             ship.shipObject.rotation = 0;
             ship.isVertical = false;
         }
     }
 
-    function randomlyPlaceShips(ships: Ship[], cells: createjs.Container[][]): number[][] {
-        var map: number[][] = new Array(5);
+    function randomlyPlaceShips(ships, cells) {
+        var map = new Array(5);
 
         for (var i = 0; i < 5; i++) {
             map[i] = new Array(7);
@@ -375,36 +366,33 @@ module screen_window {
         for (var i = 0; i < 6; i++) {
             if (Math.random() > 0.5) {
                 ships[i].isVertical = false;
-            }
-            else {
+            } else {
                 ships[i].isVertical = true;
             }
             rotate(ships[i]);
-            var limitX: number = 7;
-            var limitY: number = 5;
+            var limitX = 7;
+            var limitY = 5;
             if (ships[i].isVertical) {
                 limitY -= ships[i].length;
-            }
-            else {
+            } else {
                 limitX -= ships[i].length;
             }
-            var x: number;
-            var y: number;
-            var count: number = 0;
+            var x;
+            var y;
+            var count = 0;
             do {
                 if (count > 10) {
                     ships[i].isVertical = !ships[i].isVertical;
                 }
                 x = Math.floor(Math.random() * limitY);
                 y = Math.floor(Math.random() * limitX);
-            } while (!canShipBePlaced(map, x, y, ships[i].isVertical, ships[i].length));
+            } while(!canShipBePlaced(map, x, y, ships[i].isVertical, ships[i].length));
             count = 0;
             if (ships[i].isVertical) {
                 for (var j = x; (j < 5) && (j < x + ships[i].length); j++) {
                     map[j][y] = i;
                 }
-            }
-            else {
+            } else {
                 for (var j = y; (j < 7) && (j < y + ships[i].length); j++) {
                     map[x][j] = i;
                 }
@@ -417,7 +405,7 @@ module screen_window {
         return map;
     }
 
-    function canShipBePlaced(map: number[][], x: number, y: number, isVertical: boolean, len: number): boolean {
+    function canShipBePlaced(map, x, y, isVertical, len) {
         if (isVertical) {
             for (var i = x; (i < 5) && (i < x + len); i++) {
                 if (map[i][y] !== -1) {
@@ -427,8 +415,7 @@ module screen_window {
             if (i === 5 && x > 5 - len) {
                 return false;
             }
-        }
-        else {
+        } else {
             for (var i = y; (i < 7) && (i < y + len); i++) {
                 if (map[x][i] !== -1) {
                     return false;
@@ -443,9 +430,9 @@ module screen_window {
 
     window.addEventListener("message", messageEventHandler, false);
 
-    window.onload = (): void => {
-        canvas = <HTMLCanvasElement>document.getElementById("screen");
-        reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
+    window.onload = function () {
+        canvas = document.getElementById("screen");
+        reticle = new Reticle(document.getElementById("holder"));
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);
@@ -463,11 +450,12 @@ module screen_window {
         startPreload();
     };
 
-    window.onunload = (): void => {
+    window.onunload = function () {
         createjs.Ticker.removeAllEventListeners();
         stage.removeAllChildren();
         stage.enableDOMEvents(false);
         stage = null;
         window.clearInterval(intervalId);
-    }
-} 
+    };
+})(screen_window || (screen_window = {}));
+//# sourceMappingURL=screen.js.map
