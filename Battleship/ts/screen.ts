@@ -8,6 +8,7 @@ module screen_window {
     var stage: createjs.Stage;
     var queue: createjs.LoadQueue;
     var shouldUpdate: boolean = true;
+    var isAnimating: boolean = false;
     var isCpuTurn: boolean = true;
     var playerCells: Array<Array<createjs.Container>> = [];
     var cpuCells: Array<Array<createjs.Container>> = [];
@@ -81,6 +82,9 @@ module screen_window {
     function update(): void {
         if (shouldUpdate) {
             shouldUpdate = false;
+            stage.update();
+        }
+        if (isAnimating) {
             stage.update();
         }
     }
@@ -288,8 +292,24 @@ module screen_window {
             else {
                 playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")));
                 playerShips[playerMap[reticle.x][reticle.y]].length--;
+
                 if (playerShips[playerMap[reticle.x][reticle.y]].length === 0) {
-                    console.log("Ship with id " + playerMap[reticle.x][reticle.y] + "sunk!");
+                    console.log("Ship with id " + playerMap[reticle.x][reticle.y] + " sunk!");
+                    var boom: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("explosion"));
+                    boom.x = 650;
+                    boom.y = 450;
+                    boom.scaleX = boom.scaleY = 0.2;
+                    isAnimating = true;
+                    createjs.Tween.get(boom)
+                        .to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut)
+                        .to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
+                    playerGridContainer.addChild(boom);
+                    setTimeout(() => {
+                        isAnimating = false;
+                        playerGridContainer.removeChild(boom);
+                        shouldUpdate = true;
+                    }, 1400);
+                    
                 }
             }
         }
@@ -301,7 +321,7 @@ module screen_window {
                 cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit")));
                 cpuShips[cpuMap[reticle.x][reticle.y]].length--;
                 if (cpuShips[cpuMap[reticle.x][reticle.y]].length === 0) {
-                    console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + "sunk!");
+                    console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + " sunk!");
                 }
             }
         }
