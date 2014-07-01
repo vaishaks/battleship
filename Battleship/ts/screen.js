@@ -8,6 +8,7 @@ var screen_window;
     var stage;
     var queue;
     var shouldUpdate = true;
+    var isAnimating = false;
     var isCpuTurn = true;
     var playerCells = [];
     var cpuCells = [];
@@ -73,6 +74,9 @@ var screen_window;
     function update() {
         if (shouldUpdate) {
             shouldUpdate = false;
+            stage.update();
+        }
+        if (isAnimating) {
             stage.update();
         }
     }
@@ -282,8 +286,21 @@ var screen_window;
             } else {
                 playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("hit_us")));
                 playerShips[playerMap[reticle.x][reticle.y]].length--;
+
                 if (playerShips[playerMap[reticle.x][reticle.y]].length === 0) {
-                    console.log("Ship with id " + playerMap[reticle.x][reticle.y] + "sunk!");
+                    console.log("Ship with id " + playerMap[reticle.x][reticle.y] + " sunk!");
+                    var boom = new createjs.Bitmap(queue.getResult("explosion"));
+                    boom.x = 650;
+                    boom.y = 450;
+                    boom.scaleX = boom.scaleY = 0.2;
+                    isAnimating = true;
+                    createjs.Tween.get(boom).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
+                    playerGridContainer.addChild(boom);
+                    setTimeout(function () {
+                        isAnimating = false;
+                        playerGridContainer.removeChild(boom);
+                        shouldUpdate = true;
+                    }, 1400);
                 }
             }
         } else {
@@ -293,7 +310,7 @@ var screen_window;
                 cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("hit")));
                 cpuShips[cpuMap[reticle.x][reticle.y]].length--;
                 if (cpuShips[cpuMap[reticle.x][reticle.y]].length === 0) {
-                    console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + "sunk!");
+                    console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + " sunk!");
                 }
             }
         }
