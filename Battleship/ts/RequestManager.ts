@@ -1,4 +1,4 @@
-﻿/// <reference path="scripts/typings/jquery/jquery.d.ts" />
+﻿/// <reference path="_references.ts" />
 
 module RequestManager {
     var serverUrl: string = "http://battleshipapi.azurewebsites.net/api/game/hard/play";
@@ -23,8 +23,8 @@ module RequestManager {
             type: 'POST',
             data: JSON.stringify(data),
             headers: {
-                "Accept": 'application/json',   //If your header name has spaces or any other char not appropriate
-                "Content-Type": 'application/json',  //for object property name, use quoted notation shown in second
+                "Accept": 'application/json',
+                "Content-Type": 'application/json',
             },
             dataType: 'json',
             success: (data: Array<IMoves>) => {

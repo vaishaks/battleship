@@ -379,9 +379,9 @@
     <Content Include="Scripts\version.json" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="reticle.js" />
-    <TypeScriptCompile Include="RequestManager.ts" />
-    <TypeScriptCompile Include="screen.ts" />
+    <Content Include="Scripts\reticle.js" />
+    <TypeScriptCompile Include="ts\RequestManager.ts" />
+    <TypeScriptCompile Include="ts\screen.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-mocks.d.ts" />
