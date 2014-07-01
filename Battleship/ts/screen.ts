@@ -14,7 +14,9 @@ module screen_window {
     var playerGridContainer: createjs.Container;
     var cpuGridContainer: createjs.Container
     var playerShips: Array<Ship> = new Array<Ship>(6);
-    var playerMap: Array<Array<boolean>>;
+    var cpuShips: Ship[] = new Array<Ship>(6);
+    var playerMap: boolean[][];
+    var cpuMap: boolean[][];
     var selectedShip: Ship;
     var reticle: Reticle;
     var intervalId: any;
@@ -28,7 +30,8 @@ module screen_window {
         { src: "images/grid.png", id: "grid" },
         { src: "images/explosion.png", id: "explosion" },
         { src: "images/hit.png", id: "hit" },
-        { src: "images/miss.png", id: "miss" }];
+        { src: "images/miss.png", id: "miss" },
+        { src: "images/hit_us.png", id: "hit_us" }];
 
     class Ship {
         public shipObject: createjs.Bitmap;
@@ -110,6 +113,14 @@ module screen_window {
         playerShips[5] = new Ship(patrolBoat2, 1);
         playerShips[5].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(5); }, false);
 
+        var hit_us: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us"));
+        cpuShips[0] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 4);
+        cpuShips[1] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 3);
+        cpuShips[2] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 2);
+        cpuShips[3] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 2);
+        cpuShips[4] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 1);
+        cpuShips[5] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")), 1);
+
         var playerGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
         var cpuGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
 
@@ -133,6 +144,8 @@ module screen_window {
             moves = data;
             //playGame(moves);
         });
+
+        cpuMap = randomlyPlaceShips(cpuShips, cpuCells);
         
         reticle.move(Math.floor(Math.random() * 5), Math.floor(Math.random() * 7));
 
@@ -330,8 +343,7 @@ module screen_window {
 
     function randomlyPlaceShips(ships: Ship[], cells: createjs.Container[][]): boolean[][] {
         var map: boolean[][] = new Array(5);
-        var ships: Ship[];
-        var cells: createjs.Container[][];
+
         for (var i = 0; i < 5; i++) {
             map[i] = new Array(7);
             for (var j = 0; j < 7; j++) {
@@ -345,7 +357,7 @@ module screen_window {
             else {
                 ships[i].isVertical = true;
             }
-            rotate(playerShips[i]);
+            rotate(ships[i]);
             var limitX: number = 7;
             var limitY: number = 5;
             if (ships[i].isVertical) {
