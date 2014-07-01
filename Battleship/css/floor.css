@@ -1,7 +1,11 @@
 ﻿body {
     /*Change to 90 degrees for ripple*/
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
     transform: rotate(90deg);
-	font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
     color: #FFF;
@@ -77,8 +81,8 @@
 .scenario {
     position: relative;
     height: 1000px;
-    margin-top: 40px;   
-    overflow: hidden; 
+    margin-top: 40px;
+    overflow: hidden;
 }
 
 .data {
@@ -140,7 +144,7 @@
     .safezone .square,
     .safezone .wide {
         background: transparent center center no-repeat;
-        background-size: 100px; 
+        background-size: 100px;
     }
 
     .safezone .square {
@@ -151,34 +155,34 @@
     .safezone .wide {
         width: 500px;
         height: 250px;
-    }   
-   
-
-    #stand {
-        background-image: url("/Images/Foot Print.png");
-        background-size: contain;
     }
 
-    #exit {
-        background-image: url("/Images/Previous.png");
-    }
 
-    #randomize {
-        background-image: url("/Images/Cloud-Thunder.png");
-        float: left;
-    }
+#stand {
+    background-image: url("/Images/Foot Print.png");
+    background-size: contain;
+}
 
-    #rotate {
-        background-image: url("/images/rotate.png");
-    }
+#exit {
+    background-image: url("/Images/Previous.png");
+}
 
-    #fire {
-        background-image: url("/images/up.png");
-    }
+#randomize {
+    background-image: url("/Images/Cloud-Thunder.png");
+    float: left;
+}
+
+#rotate {
+    background-image: url("/images/rotate.png");
+}
+
+#fire {
+    background-image: url("/images/up.png");
+}
 
 .ship {
     margin-bottom: 50px;
-    display: block;    
+    display: block;
 }
 
     .ship .info {
@@ -186,10 +190,10 @@
         padding: 20px;
         font-weight: 800;
         text-transform: uppercase;
-        margin-top: 30px;        
+        margin-top: 30px;
         margin-left: 40px;
     }
 
-        .ship:nth-child(4) .info {
-            margin-top: -10px;
-        }
+    .ship:nth-child(4) .info {
+        margin-top: -10px;
+    }

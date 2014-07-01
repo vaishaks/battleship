@@ -379,7 +379,8 @@
     <Content Include="Scripts\version.json" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="reticle.ts" />
+    <Content Include="reticle.js" />
+    <TypeScriptCompile Include="RequestManager.ts" />
     <TypeScriptCompile Include="screen.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
