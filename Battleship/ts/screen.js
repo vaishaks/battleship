@@ -10,6 +10,9 @@ var screen_window;
     var shouldUpdate = true;
     var isAnimating = false;
     var isCpuTurn = true;
+    var bg;
+    var playerGrid;
+    var cpuGrid;
     var playerCells = [];
     var cpuCells = [];
     var playerGridContainer;
@@ -95,15 +98,9 @@ var screen_window;
         return data;
     }
 
-    function playerTurn() {
-    }
-
-    function handleComplete(eventinfo) {
-        $(".windows8").hide();
-        $("#splash-screen").hide();
-        $("#screen").show();
-        $("#container").css("display", "block");
-        var bg = new createjs.Bitmap(queue.getResult("backgroundScreen"));
+    function init() {
+        createjs.Sound.play("theme_music", createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 1, 0);
+        bg = new createjs.Bitmap(queue.getResult("backgroundScreen"));
         var aircraftCarrier = new createjs.Bitmap(queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
         playerShips[0].shipObject.addEventListener("click", function (eventinfo) {
@@ -142,8 +139,8 @@ var screen_window;
         cpuShips[4] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 1, 4);
         cpuShips[5] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 1, 5);
 
-        var playerGrid = new createjs.Bitmap(queue.getResult("grid"));
-        var cpuGrid = new createjs.Bitmap(queue.getResult("grid"));
+        playerGrid = new createjs.Bitmap(queue.getResult("grid"));
+        cpuGrid = new createjs.Bitmap(queue.getResult("grid"));
 
         playerGridContainer = new createjs.Container();
         playerGridContainer.x = 100;
@@ -157,13 +154,18 @@ var screen_window;
 
         playerCells = createGridCells();
         cpuCells = createGridCells();
+    }
 
+    function startGame() {
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
+        $("#splash-screen").hide();
+        $("#screen").show();
+        $("#container").css("display", "block");
         playerMap = randomlyPlaceShips(playerShips, playerCells);
         var data = getBoard();
         RequestManager.getMoves("hard", data).done(function (data) {
             moves = data;
-            //playGame(moves);
+            playGame();
         });
 
         cpuMap = randomlyPlaceShips(cpuShips, cpuCells);
@@ -186,6 +188,49 @@ var screen_window;
 
         stage.addChild(bg);
         stage.addChild(playerGridContainer);
+    }
+
+    function newGame() {
+        init();
+        startGame();
+    }
+
+    function playGame() {
+        nextMove();
+    }
+
+    function nextMove() {
+        if (moves.length > move) {
+            reticle.move(moves[move].x, moves[move].y);
+            $("#shoot").trigger("click");
+            move++;
+            return true;
+        } else {
+            console.log("No more moves");
+            return false;
+        }
+    }
+
+    function switchTurn() {
+        if (isCpuTurn) {
+            stage.removeChild(playerGridContainer);
+            stage.addChild(cpuGridContainer);
+            isCpuTurn = false;
+            shouldUpdate = true;
+        } else {
+            stage.removeChild(cpuGridContainer);
+            stage.addChild(playerGridContainer);
+            isCpuTurn = true;
+            shouldUpdate = true;
+            window.setTimeout(function () {
+                nextMove();
+            }, 800);
+        }
+    }
+
+    function handleComplete(eventinfo) {
+        $(".windows8").hide();
+        init();
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }
@@ -337,7 +382,7 @@ var screen_window;
                     boom.y = 450;
                     boom.scaleX = boom.scaleY = 0.01;
                     isAnimating = true;
-                    createjs.Tween.get(boom).wait(1000).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
+                    createjs.Tween.get(boom).wait(1000).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).wait(1000).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
                     cpuGridContainer.addChild(boom);
                     setTimeout(function () {
                         isAnimating = false;
@@ -349,29 +394,26 @@ var screen_window;
         }
         window.setTimeout(function () {
             shouldUpdate = true;
-        }, 800);
+        }, 700);
+        window.setTimeout(function () {
+            switchTurn();
+        }, 3000);
     }
 
     function nextMoveClickEventHandler(eventinfo) {
-        try  {
-            reticle.move(moves[move].x, moves[move].y);
-            $("#shoot").trigger("click");
-            move++;
-        } catch (e) {
-            console.log("No more moves");
-        }
+        nextMove();
     }
+
     function switchTurnClickEventHandler(eventinfo) {
-        if (isCpuTurn) {
-            stage.removeChild(playerGridContainer);
-            stage.addChild(cpuGridContainer);
-            isCpuTurn = false;
-        } else {
-            stage.removeChild(cpuGridContainer);
-            stage.addChild(playerGridContainer);
-            isCpuTurn = true;
-        }
-        shouldUpdate = true;
+        switchTurn();
+    }
+
+    function newGameButtonClickEventHandler(eventinfo) {
+        newGame();
+    }
+
+    function startGameButtonClickEventHandler(eventinfo) {
+        startGame();
     }
 
     function createGridCells() {
@@ -484,6 +526,8 @@ var screen_window;
         $("#screen").hide();
         canvas = document.getElementById("screen");
         reticle = new Reticle(document.getElementById("holder"));
+        document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
+        document.getElementById("new-game").addEventListener("click", newGameButtonClickEventHandler, false);
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);

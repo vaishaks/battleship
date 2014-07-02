@@ -10,6 +10,9 @@ module screen_window {
     var shouldUpdate: boolean = true;
     var isAnimating: boolean = false;
     var isCpuTurn: boolean = true;
+    var bg: createjs.Bitmap;
+    var playerGrid: createjs.Bitmap;
+    var cpuGrid: createjs.Bitmap;
     var playerCells: Array<Array<createjs.Container>> = [];
     var cpuCells: Array<Array<createjs.Container>> = [];
     var playerGridContainer: createjs.Container;
@@ -103,16 +106,9 @@ module screen_window {
         return data;
     }
 
-    function playerTurn() {
-        
-    }
-
-    function handleComplete(eventinfo: CustomEvent): void {
-        $(".windows8").hide();
-        $("#splash-screen").hide();
-        $("#screen").show();
-        $("#container").css("display", "block");
-        var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
+    function init(): void {
+        createjs.Sound.play("theme_music", createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 1, 0);
+        bg = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
         var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
         playerShips[0].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(0); }, false);
@@ -139,8 +135,8 @@ module screen_window {
         cpuShips[4] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 1, 4);
         cpuShips[5] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 1, 5);
 
-        var playerGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
-        var cpuGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
+        playerGrid = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
+        cpuGrid = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
 
         playerGridContainer = new createjs.Container();
         playerGridContainer.x = 100;
@@ -154,17 +150,22 @@ module screen_window {
 
         playerCells = createGridCells();
         cpuCells = createGridCells();
+    }
 
+    function startGame(): void {
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
+        $("#splash-screen").hide();
+        $("#screen").show();
+        $("#container").css("display", "block");
         playerMap = randomlyPlaceShips(playerShips, playerCells);
         var data: Array<RequestManager.IBoard> = getBoard();
         RequestManager.getMoves("hard", data).done((data) => {
             moves = data;
-            //playGame(moves);
+            playGame();
         });
 
         cpuMap = randomlyPlaceShips(cpuShips, cpuCells);
-        
+
         reticle.move(Math.floor(Math.random() * 5), Math.floor(Math.random() * 7));
 
         playerGridContainer.addChild(playerGrid);
@@ -183,6 +184,49 @@ module screen_window {
 
         stage.addChild(bg);
         stage.addChild(playerGridContainer);
+    }
+
+    function newGame(): void {
+        init();
+        startGame();
+    }
+
+    function playGame(): void {
+        nextMove();
+    }
+
+    function nextMove(): boolean {
+        if (moves.length > move) {
+            reticle.move(moves[move].x, moves[move].y);
+            $("#shoot").trigger("click");
+            move++;
+            return true;
+        }
+        else {
+            console.log("No more moves");
+            return false;
+        }
+    }
+
+    function switchTurn(): void {
+        if (isCpuTurn) {
+            stage.removeChild(playerGridContainer);
+            stage.addChild(cpuGridContainer);            
+            isCpuTurn = false;
+            shouldUpdate = true;
+        }
+        else {
+            stage.removeChild(cpuGridContainer);
+            stage.addChild(playerGridContainer);
+            isCpuTurn = true;
+            shouldUpdate = true;
+            window.setTimeout(() => { nextMove(); }, 800);
+        }        
+    }
+
+    function handleComplete(eventinfo: CustomEvent): void {
+        $(".windows8").hide();
+        init();
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }
@@ -344,6 +388,7 @@ module screen_window {
                     createjs.Tween.get(boom)
                         .wait(1000)
                         .to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut)
+                        .wait(1000)
                         .to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
                     cpuGridContainer.addChild(boom);
                     setTimeout(() => {
@@ -354,31 +399,24 @@ module screen_window {
                 }
             }
         }
-        window.setTimeout(() => { shouldUpdate = true; }, 800);
+        window.setTimeout(() => { shouldUpdate = true; }, 700);
+        window.setTimeout(() => { switchTurn(); }, 3000);
     }
 
     function nextMoveClickEventHandler(eventinfo: any) {
-        try {
-            reticle.move(moves[move].x, moves[move].y);
-            $("#shoot").trigger("click");
-            move++;
-        }
-        catch (e) {
-            console.log("No more moves");
-        }
+        nextMove();
     }
+
     function switchTurnClickEventHandler(eventinfo: any) {
-        if (isCpuTurn) {
-            stage.removeChild(playerGridContainer);
-            stage.addChild(cpuGridContainer);
-            isCpuTurn = false;
-        }
-        else {
-            stage.removeChild(cpuGridContainer);
-            stage.addChild(playerGridContainer);
-            isCpuTurn = true;
-        }
-        shouldUpdate = true;
+        switchTurn();
+    }
+
+    function newGameButtonClickEventHandler(eventinfo: any): void {
+        newGame();
+    }
+
+    function startGameButtonClickEventHandler(eventinfo: any): void {
+        startGame();
     }
 
     function createGridCells(): any[] {
@@ -496,6 +534,8 @@ module screen_window {
         $("#screen").hide();
         canvas = <HTMLCanvasElement>document.getElementById("screen");
         reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
+        document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
+        document.getElementById("new-game").addEventListener("click", newGameButtonClickEventHandler, false);
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);
