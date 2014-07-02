@@ -5,10 +5,16 @@ var RequestManager;
     var modesUrl = baseUrl + "/modes";
     var gameUrl = baseUrl + "/@mode/play";
 
-    function getMoves(mode, data) {
-        var deferred = $.Deferred();
+    function getModes() {
         $.support.cors = true;
-        $.ajax({
+        var xhr = $.getJSON(modesUrl);
+        return xhr;
+    }
+    RequestManager.getModes = getModes;
+
+    function getMoves(mode, data) {
+        $.support.cors = true;
+        var xhr = $.ajax({
             url: gameUrl.replace("@mode", mode),
             type: 'POST',
             data: JSON.stringify(data),
@@ -16,15 +22,9 @@ var RequestManager;
                 "Accept": 'application/json',
                 "Content-Type": 'application/json'
             },
-            dataType: 'json',
-            success: function (data) {
-                deferred.resolve(data);
-            },
-            error: function () {
-                deferred.reject();
-            }
-        }).fail("request failed");
-        return deferred;
+            dataType: 'json'
+        });
+        return xhr;
     }
     RequestManager.getMoves = getMoves;
 })(RequestManager || (RequestManager = {}));

@@ -10,6 +10,9 @@ var screen_window;
     var shouldUpdate = true;
     var isAnimating = false;
     var isCpuTurn = true;
+    var bg;
+    var playerGrid;
+    var cpuGrid;
     var playerCells = [];
     var cpuCells = [];
     var playerGridContainer;
@@ -36,7 +39,12 @@ var screen_window;
         { src: "images/miss.png", id: "miss" },
         { src: "images/hit_us.png", id: "hit_us" },
         { src: "images/spaceship.png", id: "spaceship" },
-        { src: "images/explosion.png", id: "explosion" }];
+        { src: "images/explosion.png", id: "explosion" },
+        { src: "sounds/theme_music.mp3", id: "theme_music" },
+        { src: "sounds/hit.mp3", id: "hit_sound" },
+        { src: "sounds/miss.mp3", id: "miss_sound" },
+        { src: "sounds/disco_theme.mp3", id: "disco_theme" },
+        { src: "sounds/hit_us.mp3", id: "hit_us_sound" }];
 
     var Ship = (function () {
         function Ship(shipObject, length, id) {
@@ -67,6 +75,8 @@ var screen_window;
 
     function startPreload() {
         queue = new createjs.LoadQueue(false);
+        createjs.Sound.alternateExtensions = ["mp3"];
+        queue.installPlugin(createjs.Sound);
         queue.addEventListener("complete", handleComplete, false);
         queue.loadManifest(manifest);
     }
@@ -88,11 +98,9 @@ var screen_window;
         return data;
     }
 
-    function playerTurn() {
-    }
-
-    function handleComplete(eventinfo) {
-        var bg = new createjs.Bitmap(queue.getResult("backgroundScreen"));
+    function init() {
+        createjs.Sound.play("theme_music", createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 1, 0);
+        bg = new createjs.Bitmap(queue.getResult("backgroundScreen"));
         var aircraftCarrier = new createjs.Bitmap(queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
         playerShips[0].shipObject.addEventListener("click", function (eventinfo) {
@@ -124,7 +132,6 @@ var screen_window;
             shipClickEventHandler(5);
         }, false);
 
-        var hit_us = new createjs.Bitmap(queue.getResult("hit_us"));
         cpuShips[0] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 4, 0);
         cpuShips[1] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 3, 1);
         cpuShips[2] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 2, 2);
@@ -132,8 +139,8 @@ var screen_window;
         cpuShips[4] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 1, 4);
         cpuShips[5] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 1, 5);
 
-        var playerGrid = new createjs.Bitmap(queue.getResult("grid"));
-        var cpuGrid = new createjs.Bitmap(queue.getResult("grid"));
+        playerGrid = new createjs.Bitmap(queue.getResult("grid"));
+        cpuGrid = new createjs.Bitmap(queue.getResult("grid"));
 
         playerGridContainer = new createjs.Container();
         playerGridContainer.x = 100;
@@ -147,13 +154,18 @@ var screen_window;
 
         playerCells = createGridCells();
         cpuCells = createGridCells();
+    }
 
+    function startGame() {
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
+        $("#splash-screen").hide();
+        $("#screen").show();
+        $("#container").css("display", "block");
         playerMap = randomlyPlaceShips(playerShips, playerCells);
         var data = getBoard();
-        RequestManager.getMoves(data).done(function (data) {
+        RequestManager.getMoves("hard", data).done(function (data) {
             moves = data;
-            //playGame(moves);
+            playGame();
         });
 
         cpuMap = randomlyPlaceShips(cpuShips, cpuCells);
@@ -176,6 +188,49 @@ var screen_window;
 
         stage.addChild(bg);
         stage.addChild(playerGridContainer);
+    }
+
+    function newGame() {
+        init();
+        startGame();
+    }
+
+    function playGame() {
+        nextMove();
+    }
+
+    function nextMove() {
+        if (moves.length > move) {
+            reticle.move(moves[move].x, moves[move].y);
+            $("#shoot").trigger("click");
+            move++;
+            return true;
+        } else {
+            console.log("No more moves");
+            return false;
+        }
+    }
+
+    function switchTurn() {
+        if (isCpuTurn) {
+            stage.removeChild(playerGridContainer);
+            stage.addChild(cpuGridContainer);
+            isCpuTurn = false;
+            shouldUpdate = true;
+        } else {
+            stage.removeChild(cpuGridContainer);
+            stage.addChild(playerGridContainer);
+            isCpuTurn = true;
+            shouldUpdate = true;
+            window.setTimeout(function () {
+                nextMove();
+            }, 800);
+        }
+    }
+
+    function handleComplete(eventinfo) {
+        $(".windows8").hide();
+        init();
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }
@@ -283,62 +338,82 @@ var screen_window;
         if (isCpuTurn) {
             if (playerMap[reticle.x][reticle.y] == -1) {
                 playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("miss")));
+                setTimeout(function () {
+                    createjs.Sound.play("miss_sound");
+                }, 800);
             } else {
                 playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("hit_us")));
                 playerShips[playerMap[reticle.x][reticle.y]].length--;
-
+                setTimeout(function () {
+                    createjs.Sound.play("hit_us_sound");
+                }, 1000);
                 if (playerShips[playerMap[reticle.x][reticle.y]].length === 0) {
                     console.log("Ship with id " + playerMap[reticle.x][reticle.y] + " sunk!");
                     var boom = new createjs.Bitmap(queue.getResult("explosion"));
                     boom.x = 650;
                     boom.y = 450;
-                    boom.scaleX = boom.scaleY = 0.2;
+                    boom.scaleX = boom.scaleY = 0.01;
                     isAnimating = true;
-                    createjs.Tween.get(boom).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
+                    createjs.Tween.get(boom).wait(1000).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
                     playerGridContainer.addChild(boom);
                     setTimeout(function () {
                         isAnimating = false;
                         playerGridContainer.removeChild(boom);
                         shouldUpdate = true;
-                    }, 1400);
+                    }, 1800);
                 }
             }
         } else {
             if (cpuMap[reticle.x][reticle.y] == -1) {
                 cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("miss")));
+                setTimeout(function () {
+                    createjs.Sound.play("miss_sound");
+                }, 800);
             } else {
                 cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("hit")));
                 cpuShips[cpuMap[reticle.x][reticle.y]].length--;
+                setTimeout(function () {
+                    createjs.Sound.play("hit_sound");
+                }, 1000);
                 if (cpuShips[cpuMap[reticle.x][reticle.y]].length === 0) {
                     console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + " sunk!");
+                    var boom = new createjs.Bitmap(queue.getResult("explosion"));
+                    boom.x = 650;
+                    boom.y = 450;
+                    boom.scaleX = boom.scaleY = 0.01;
+                    isAnimating = true;
+                    createjs.Tween.get(boom).wait(1000).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).wait(1000).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
+                    cpuGridContainer.addChild(boom);
+                    setTimeout(function () {
+                        isAnimating = false;
+                        cpuGridContainer.removeChild(boom);
+                        shouldUpdate = true;
+                    }, 1800);
                 }
             }
         }
         window.setTimeout(function () {
             shouldUpdate = true;
-        }, 800);
+        }, 700);
+        window.setTimeout(function () {
+            switchTurn();
+        }, 3000);
     }
 
     function nextMoveClickEventHandler(eventinfo) {
-        try  {
-            reticle.move(moves[move].x, moves[move].y);
-            $("#shoot").trigger("click");
-            move++;
-        } catch (e) {
-            console.log("No more moves");
-        }
+        nextMove();
     }
+
     function switchTurnClickEventHandler(eventinfo) {
-        if (isCpuTurn) {
-            stage.removeChild(playerGridContainer);
-            stage.addChild(cpuGridContainer);
-            isCpuTurn = false;
-        } else {
-            stage.removeChild(cpuGridContainer);
-            stage.addChild(playerGridContainer);
-            isCpuTurn = true;
-        }
-        shouldUpdate = true;
+        switchTurn();
+    }
+
+    function newGameButtonClickEventHandler(eventinfo) {
+        newGame();
+    }
+
+    function startGameButtonClickEventHandler(eventinfo) {
+        startGame();
     }
 
     function createGridCells() {
@@ -448,8 +523,11 @@ var screen_window;
     window.addEventListener("message", messageEventHandler, false);
 
     window.onload = function () {
+        $("#screen").hide();
         canvas = document.getElementById("screen");
         reticle = new Reticle(document.getElementById("holder"));
+        document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
+        document.getElementById("new-game").addEventListener("click", newGameButtonClickEventHandler, false);
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);

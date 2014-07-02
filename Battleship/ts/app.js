@@ -5,6 +5,7 @@ var Global = (function () {
         this.RegisterControllers();
         this.RegisterRoutes();
         this.LoadSprites();
+        Global.Ripple = new RippleFloor(true);
     }
     Global.prototype.RegisterRoutes = function () {
         var app = angular.module(Global.namespace, ['ngRoute', Global.namespace + ".Controllers"]);
@@ -13,21 +14,18 @@ var Global = (function () {
                 var url = '../partials/';
 
                 routes.when("/start", {
-                    templateUrl: url + "start.html"
+                    templateUrl: url + "start.html",
+                    controller: "GameController"
                 });
 
                 routes.when("/mode", {
-                    templateUrl: url + "mode.html"
+                    templateUrl: url + "mode.html",
+                    controller: "GameController"
                 });
 
                 routes.when('/place', {
                     templateUrl: url + 'place.html',
                     controller: "PlacementContoller"
-                });
-
-                routes.when('/alien', {
-                    templateUrl: url + 'alien.html',
-                    controller: "AlienController"
                 });
 
                 routes.otherwise({
@@ -38,9 +36,8 @@ var Global = (function () {
 
     Global.prototype.RegisterControllers = function () {
         var app = angular.module(Global.namespace + ".Controllers", []);
-        app.controller('PlacementContoller', ['$scope', '$rootScope', PlacementContoller]);
-        app.controller('PlacementContoller', ['$scope', '$rootScope', '$location', MenuController]);
-        app.controller('PlacementContoller', ['$scope', '$rootScope', AlienController]);
+        app.controller('PlacementContoller', ['$scope', '$rootScope', '$location', PlacementContoller]);
+        app.controller('GameController', ['$scope', '$rootScope', '$location', GameController]);
     };
 
     Global.prototype.LoadSprites = function () {

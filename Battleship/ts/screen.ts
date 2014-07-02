@@ -10,6 +10,9 @@ module screen_window {
     var shouldUpdate: boolean = true;
     var isAnimating: boolean = false;
     var isCpuTurn: boolean = true;
+    var bg: createjs.Bitmap;
+    var playerGrid: createjs.Bitmap;
+    var cpuGrid: createjs.Bitmap;
     var playerCells: Array<Array<createjs.Container>> = [];
     var cpuCells: Array<Array<createjs.Container>> = [];
     var playerGridContainer: createjs.Container;
@@ -34,7 +37,12 @@ module screen_window {
         { src: "images/miss.png", id: "miss" },
         { src: "images/hit_us.png", id: "hit_us" },
         { src: "images/spaceship.png", id: "spaceship" },
-        { src: "images/explosion.png", id: "explosion" }];
+        { src: "images/explosion.png", id: "explosion" },
+        { src: "sounds/theme_music.mp3", id: "theme_music" },
+        { src: "sounds/hit.mp3", id: "hit_sound" },
+        { src: "sounds/miss.mp3", id: "miss_sound" },
+        { src: "sounds/disco_theme.mp3", id: "disco_theme" },
+        { src: "sounds/hit_us.mp3", id: "hit_us_sound" }];
 
     class Ship {
         public shipObject: createjs.Bitmap;
@@ -75,6 +83,8 @@ module screen_window {
 
     function startPreload(): void {
         queue = new createjs.LoadQueue(false);
+        createjs.Sound.alternateExtensions = ["mp3"];
+        queue.installPlugin(createjs.Sound);
         queue.addEventListener("complete", handleComplete, false);
         queue.loadManifest(manifest);
     }
@@ -96,12 +106,9 @@ module screen_window {
         return data;
     }
 
-    function playerTurn() {
-        
-    }
-
-    function handleComplete(eventinfo: CustomEvent): void {
-        var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
+    function init(): void {
+        createjs.Sound.play("theme_music", createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 1, 0);
+        bg = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
         var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
         playerShips[0].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(0); }, false);
@@ -121,7 +128,6 @@ module screen_window {
         playerShips[5] = new Ship(patrolBoat2, 1, 5);
         playerShips[5].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(5); }, false);
 
-        var hit_us: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us"));
         cpuShips[0] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 4, 0);
         cpuShips[1] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 3, 1);
         cpuShips[2] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 2, 2);
@@ -129,8 +135,8 @@ module screen_window {
         cpuShips[4] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 1, 4);
         cpuShips[5] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 1, 5);
 
-        var playerGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
-        var cpuGrid: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
+        playerGrid = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
+        cpuGrid = new createjs.Bitmap(<HTMLImageElement>queue.getResult("grid"));
 
         playerGridContainer = new createjs.Container();
         playerGridContainer.x = 100;
@@ -144,17 +150,22 @@ module screen_window {
 
         playerCells = createGridCells();
         cpuCells = createGridCells();
+    }
 
+    function startGame(): void {
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
+        $("#splash-screen").hide();
+        $("#screen").show();
+        $("#container").css("display", "block");
         playerMap = randomlyPlaceShips(playerShips, playerCells);
         var data: Array<RequestManager.IBoard> = getBoard();
-        RequestManager.getMoves("Hard", data).done((data) => {
+        RequestManager.getMoves("hard", data).done((data) => {
             moves = data;
-            //playGame(moves);
+            playGame();
         });
 
         cpuMap = randomlyPlaceShips(cpuShips, cpuCells);
-        
+
         reticle.move(Math.floor(Math.random() * 5), Math.floor(Math.random() * 7));
 
         playerGridContainer.addChild(playerGrid);
@@ -173,6 +184,49 @@ module screen_window {
 
         stage.addChild(bg);
         stage.addChild(playerGridContainer);
+    }
+
+    function newGame(): void {
+        init();
+        startGame();
+    }
+
+    function playGame(): void {
+        nextMove();
+    }
+
+    function nextMove(): boolean {
+        if (moves.length > move) {
+            reticle.move(moves[move].x, moves[move].y);
+            $("#shoot").trigger("click");
+            move++;
+            return true;
+        }
+        else {
+            console.log("No more moves");
+            return false;
+        }
+    }
+
+    function switchTurn(): void {
+        if (isCpuTurn) {
+            stage.removeChild(playerGridContainer);
+            stage.addChild(cpuGridContainer);            
+            isCpuTurn = false;
+            shouldUpdate = true;
+        }
+        else {
+            stage.removeChild(cpuGridContainer);
+            stage.addChild(playerGridContainer);
+            isCpuTurn = true;
+            shouldUpdate = true;
+            window.setTimeout(() => { nextMove(); }, 800);
+        }        
+    }
+
+    function handleComplete(eventinfo: CustomEvent): void {
+        $(".windows8").hide();
+        init();
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }
@@ -288,19 +342,21 @@ module screen_window {
         if (isCpuTurn) {
             if (playerMap[reticle.x][reticle.y] == -1) {
                 playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+                setTimeout(() => { createjs.Sound.play("miss_sound"); }, 800);
             }
             else {
                 playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us")));
                 playerShips[playerMap[reticle.x][reticle.y]].length--;
-
+                setTimeout(() => { createjs.Sound.play("hit_us_sound"); }, 1000);
                 if (playerShips[playerMap[reticle.x][reticle.y]].length === 0) {
                     console.log("Ship with id " + playerMap[reticle.x][reticle.y] + " sunk!");
                     var boom: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("explosion"));
                     boom.x = 650;
                     boom.y = 450;
-                    boom.scaleX = boom.scaleY = 0.2;
+                    boom.scaleX = boom.scaleY = 0.01;
                     isAnimating = true;
                     createjs.Tween.get(boom)
+                        .wait(1000)
                         .to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut)
                         .to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
                     playerGridContainer.addChild(boom);
@@ -308,7 +364,7 @@ module screen_window {
                         isAnimating = false;
                         playerGridContainer.removeChild(boom);
                         shouldUpdate = true;
-                    }, 1400);
+                    }, 1800);
                     
                 }
             }
@@ -316,40 +372,51 @@ module screen_window {
         else {
             if (cpuMap[reticle.x][reticle.y] == -1) {
                 cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
+                setTimeout(() => { createjs.Sound.play("miss_sound"); }, 800);
             }
             else {
                 cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit")));
                 cpuShips[cpuMap[reticle.x][reticle.y]].length--;
+                setTimeout(() => { createjs.Sound.play("hit_sound"); }, 1000);
                 if (cpuShips[cpuMap[reticle.x][reticle.y]].length === 0) {
                     console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + " sunk!");
+                    var boom: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("explosion"));
+                    boom.x = 650;
+                    boom.y = 450;
+                    boom.scaleX = boom.scaleY = 0.01;
+                    isAnimating = true;
+                    createjs.Tween.get(boom)
+                        .wait(1000)
+                        .to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut)
+                        .wait(1000)
+                        .to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
+                    cpuGridContainer.addChild(boom);
+                    setTimeout(() => {
+                        isAnimating = false;
+                        cpuGridContainer.removeChild(boom);
+                        shouldUpdate = true;
+                    }, 1800);
                 }
             }
         }
-        window.setTimeout(() => { shouldUpdate = true; }, 800);
+        window.setTimeout(() => { shouldUpdate = true; }, 700);
+        window.setTimeout(() => { switchTurn(); }, 3000);
     }
 
     function nextMoveClickEventHandler(eventinfo: any) {
-        try {
-            reticle.move(moves[move].x, moves[move].y);
-            $("#shoot").trigger("click");
-            move++;
-        }
-        catch (e) {
-            console.log("No more moves");
-        }
+        nextMove();
     }
+
     function switchTurnClickEventHandler(eventinfo: any) {
-        if (isCpuTurn) {
-            stage.removeChild(playerGridContainer);
-            stage.addChild(cpuGridContainer);
-            isCpuTurn = false;
-        }
-        else {
-            stage.removeChild(cpuGridContainer);
-            stage.addChild(playerGridContainer);
-            isCpuTurn = true;
-        }
-        shouldUpdate = true;
+        switchTurn();
+    }
+
+    function newGameButtonClickEventHandler(eventinfo: any): void {
+        newGame();
+    }
+
+    function startGameButtonClickEventHandler(eventinfo: any): void {
+        startGame();
     }
 
     function createGridCells(): any[] {
@@ -464,8 +531,11 @@ module screen_window {
     window.addEventListener("message", messageEventHandler, false);
 
     window.onload = (): void => {
+        $("#screen").hide();
         canvas = <HTMLCanvasElement>document.getElementById("screen");
         reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
+        document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
+        document.getElementById("new-game").addEventListener("click", newGameButtonClickEventHandler, false);
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);
