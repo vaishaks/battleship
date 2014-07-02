@@ -19,6 +19,8 @@ var screen_window;
     var cpuGridContainer;
     var playerShips = new Array(6);
     var cpuShips = new Array(6);
+    var playerSunkCount = 0;
+    var cpuSunkCount = 0;
     var playerMap;
     var cpuMap;
     var selectedShip;
@@ -361,6 +363,7 @@ var screen_window;
                         playerGridContainer.removeChild(boom);
                         shouldUpdate = true;
                     }, 1800);
+                    playerSunkCount++;
                 }
             }
         } else {
@@ -389,6 +392,7 @@ var screen_window;
                         cpuGridContainer.removeChild(boom);
                         shouldUpdate = true;
                     }, 1800);
+                    cpuSunkCount++;
                 }
             }
         }

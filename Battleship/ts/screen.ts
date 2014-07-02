@@ -19,6 +19,8 @@ module screen_window {
     var cpuGridContainer: createjs.Container
     var playerShips: Array<Ship> = new Array<Ship>(6);
     var cpuShips: Ship[] = new Array<Ship>(6);
+    var playerSunkCount: number = 0;
+    var cpuSunkCount: number = 0;
     var playerMap: number[][];
     var cpuMap: number[][];
     var selectedShip: Ship;
@@ -365,7 +367,7 @@ module screen_window {
                         playerGridContainer.removeChild(boom);
                         shouldUpdate = true;
                     }, 1800);
-                    
+                    playerSunkCount++;
                 }
             }
         }
@@ -396,6 +398,7 @@ module screen_window {
                         cpuGridContainer.removeChild(boom);
                         shouldUpdate = true;
                     }, 1800);
+                    cpuSunkCount++;
                 }
             }
         }
