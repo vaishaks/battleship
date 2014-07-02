@@ -36,7 +36,12 @@ var screen_window;
         { src: "images/miss.png", id: "miss" },
         { src: "images/hit_us.png", id: "hit_us" },
         { src: "images/spaceship.png", id: "spaceship" },
-        { src: "images/explosion.png", id: "explosion" }];
+        { src: "images/explosion.png", id: "explosion" },
+        { src: "sounds/theme_music.mp3", id: "theme_music" },
+        { src: "sounds/hit.mp3", id: "hit_sound" },
+        { src: "sounds/miss.mp3", id: "miss_sound" },
+        { src: "sounds/disco_theme.mp3", id: "disco_theme" },
+        { src: "sounds/hit_us.mp3", id: "hit_us_sound" }];
 
     var Ship = (function () {
         function Ship(shipObject, length, id) {
@@ -67,6 +72,8 @@ var screen_window;
 
     function startPreload() {
         queue = new createjs.LoadQueue(false);
+        createjs.Sound.alternateExtensions = ["mp3"];
+        queue.installPlugin(createjs.Sound);
         queue.addEventListener("complete", handleComplete, false);
         queue.loadManifest(manifest);
     }
@@ -151,7 +158,7 @@ var screen_window;
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         playerMap = randomlyPlaceShips(playerShips, playerCells);
         var data = getBoard();
-        RequestManager.getMoves(data).done(function (data) {
+        RequestManager.getMoves("hard", data).done(function (data) {
             moves = data;
             //playGame(moves);
         });
@@ -283,34 +290,57 @@ var screen_window;
         if (isCpuTurn) {
             if (playerMap[reticle.x][reticle.y] == -1) {
                 playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("miss")));
+                setTimeout(function () {
+                    createjs.Sound.play("miss_sound");
+                }, 800);
             } else {
                 playerCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("hit_us")));
                 playerShips[playerMap[reticle.x][reticle.y]].length--;
-
+                setTimeout(function () {
+                    createjs.Sound.play("hit_us_sound");
+                }, 1000);
                 if (playerShips[playerMap[reticle.x][reticle.y]].length === 0) {
                     console.log("Ship with id " + playerMap[reticle.x][reticle.y] + " sunk!");
                     var boom = new createjs.Bitmap(queue.getResult("explosion"));
                     boom.x = 650;
                     boom.y = 450;
-                    boom.scaleX = boom.scaleY = 0.2;
+                    boom.scaleX = boom.scaleY = 0.01;
                     isAnimating = true;
-                    createjs.Tween.get(boom).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
+                    createjs.Tween.get(boom).wait(1000).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
                     playerGridContainer.addChild(boom);
                     setTimeout(function () {
                         isAnimating = false;
                         playerGridContainer.removeChild(boom);
                         shouldUpdate = true;
-                    }, 1400);
+                    }, 1800);
                 }
             }
         } else {
             if (cpuMap[reticle.x][reticle.y] == -1) {
                 cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("miss")));
+                setTimeout(function () {
+                    createjs.Sound.play("miss_sound");
+                }, 800);
             } else {
                 cpuCells[reticle.x][reticle.y].addChild(new createjs.Bitmap(queue.getResult("hit")));
                 cpuShips[cpuMap[reticle.x][reticle.y]].length--;
+                setTimeout(function () {
+                    createjs.Sound.play("hit_sound");
+                }, 1000);
                 if (cpuShips[cpuMap[reticle.x][reticle.y]].length === 0) {
                     console.log("Ship with id " + cpuMap[reticle.x][reticle.y] + " sunk!");
+                    var boom = new createjs.Bitmap(queue.getResult("explosion"));
+                    boom.x = 650;
+                    boom.y = 450;
+                    boom.scaleX = boom.scaleY = 0.01;
+                    isAnimating = true;
+                    createjs.Tween.get(boom).wait(1000).to({ scaleX: 1, scaleY: 1, x: 450, y: 250 }, 1200, createjs.Ease.bounceOut).to({ scaleX: 0.2, scaleY: 0.2, x: 650, y: 450 }, 100, createjs.Ease.bounceIn);
+                    cpuGridContainer.addChild(boom);
+                    setTimeout(function () {
+                        isAnimating = false;
+                        cpuGridContainer.removeChild(boom);
+                        shouldUpdate = true;
+                    }, 1800);
                 }
             }
         }
