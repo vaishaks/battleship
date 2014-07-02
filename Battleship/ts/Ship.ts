@@ -19,6 +19,11 @@
     Hit(): boolean {
         this.damageTaken += 1;
         this.isDestroyed = this.damageTaken === length;
+        if (this.isDestroyed) { this.Destroy(); }
         return this.isDestroyed;
+    }
+
+    Destroy() {
+        this.inventory -= 1;        
     }
 }

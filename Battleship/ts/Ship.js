@@ -10,7 +10,14 @@
     Ship.prototype.Hit = function () {
         this.damageTaken += 1;
         this.isDestroyed = this.damageTaken === length;
+        if (this.isDestroyed) {
+            this.Destroy();
+        }
         return this.isDestroyed;
+    };
+
+    Ship.prototype.Destroy = function () {
+        this.inventory -= 1;
     };
     return Ship;
 })();

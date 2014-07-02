@@ -1,7 +1,8 @@
 ﻿/// <reference path="_references.ts" />
-
 module RequestManager {
-    var serverUrl: string = "http://battleshipapi.azurewebsites.net/api/game/hard/play";
+    var baseUrl: string = "http://battleshipapi.azurewebsites.net/api/game/";
+    var modesUrl: string = baseUrl + "/modes";
+    var gameUrl: string = baseUrl + "/@mode/play";
 
     export interface IBoard {
         boatlength: number;
@@ -15,11 +16,11 @@ module RequestManager {
         y: number;
     }
 
-    export function getMoves(data: Array<IBoard>): JQueryDeferred<Array<IMoves>> {
+    export function getMoves(mode: string, data: Array<IBoard>): JQueryDeferred<Array<IMoves>> {
         var deferred = $.Deferred<Array<IMoves>>();
         $.support.cors = true;
         $.ajax({
-            url: serverUrl,
+            url: gameUrl.replace("@mode", mode),
             type: 'POST',
             data: JSON.stringify(data),
             headers: {

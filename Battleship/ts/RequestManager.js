@@ -1,13 +1,15 @@
 ﻿/// <reference path="_references.ts" />
 var RequestManager;
 (function (RequestManager) {
-    var serverUrl = "http://battleshipapi.azurewebsites.net/api/game/hard/play";
+    var baseUrl = "http://battleshipapi.azurewebsites.net/api/game/";
+    var modesUrl = baseUrl + "/modes";
+    var gameUrl = baseUrl + "/@mode/play";
 
-    function getMoves(data) {
+    function getMoves(mode, data) {
         var deferred = $.Deferred();
         $.support.cors = true;
         $.ajax({
-            url: serverUrl,
+            url: gameUrl.replace("@mode", mode),
             type: 'POST',
             data: JSON.stringify(data),
             headers: {
