@@ -3,6 +3,8 @@
 interface ITitleScope extends ng.IRootScopeService {
     title: string;
     moves: number;
+    Exit: Function;
+    Randomize: Function;
 }
 
 interface IMessageScope {
@@ -17,12 +19,14 @@ interface IHintScope {
 class Global {
     static namespace: string = "Battleship.Floor";
     static ships: Array<Ship>;
-    static aliens: Array<Ship>;
+    static aliens: Array<Ship>;     
+    static Ripple: RippleFloor;   
 
     constructor() {
         this.RegisterControllers();
         this.RegisterRoutes();
         this.LoadSprites();
+        Global.Ripple = new RippleFloor(true);        
     }
 
     RegisterRoutes() {
@@ -31,21 +35,18 @@ class Global {
             var url = '../partials/';
 
             routes.when("/start", {
-                templateUrl: url + "start.html"
+                templateUrl: url + "start.html",
+                controller: "GameController"
             });
 
             routes.when("/mode", {
-                templateUrl: url + "mode.html"
+                templateUrl: url + "mode.html",
+                controller: "GameController"
             });
-            
+
             routes.when('/place', {
                 templateUrl: url + 'place.html',
                 controller: "PlacementContoller"
-            });
-
-            routes.when('/alien', {
-                templateUrl: url + 'alien.html',
-                controller: "AlienController"
             });
 
             routes.otherwise({
@@ -56,9 +57,8 @@ class Global {
 
     RegisterControllers() {
         var app = angular.module(Global.namespace + ".Controllers", []);
-        app.controller('PlacementContoller', ['$scope', '$rootScope', PlacementContoller]);
-        app.controller('PlacementContoller', ['$scope', '$rootScope', '$location', MenuController]);
-        app.controller('PlacementContoller', ['$scope', '$rootScope', AlienController]);
+        app.controller('PlacementContoller', ['$scope', '$rootScope', '$location', PlacementContoller]);
+        app.controller('GameController', ['$scope', '$rootScope', '$location', GameController]);
     }
 
     LoadSprites() {

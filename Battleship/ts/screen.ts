@@ -148,7 +148,7 @@ module screen_window {
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         playerMap = randomlyPlaceShips(playerShips, playerCells);
         var data: Array<RequestManager.IBoard> = getBoard();
-        RequestManager.getMoves(data).done((data) => {
+        RequestManager.getMoves("Hard", data).done((data) => {
             moves = data;
             //playGame(moves);
         });

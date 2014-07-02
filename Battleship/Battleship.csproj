@@ -56,6 +56,8 @@
     <Content Include="images\up.png" />
     <Content Include="index.html" />
     <Content Include="css\screen.css" />
+    <Content Include="partials\mode.html" />
+    <Content Include="partials\start.html" />
     <Content Include="partials\message.html" />
     <Content Include="partials\place.html" />
     <Content Include="screen.html" />
@@ -372,15 +374,11 @@
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\kinetic-v4.4.3.js" />
     <Content Include="Scripts\kinetic-v4.4.3.min.js" />
-    <Content Include="ts\app.js" />
+    <Content Include="Scripts\ripple.floor.js" />
+    <Content Include="Scripts\ripple.screen.js" />
     <Content Include="ts\app.ts" />
-    <Content Include="ts\placementcontroller.js" />
     <Content Include="ts\PlacementController.ts" />
-    <Content Include="ts\RequestManager.js" />
-    <Content Include="ts\screen.js" />
-    <Content Include="ts\Ship.js" />
     <Content Include="ts\Ship.ts" />
-    <None Include="ts\_references.js" />
     <Content Include="ts\_references.ts" />
     <Content Include="web.config" />
     <Content Include="Scripts\jquery-2.1.1.min.map" />
@@ -388,6 +386,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\reticle.js" />
+    <Content Include="ts\GameController.ts" />
+    <TypeScriptCompile Include="Scripts\typings\ripple\ripple.screen.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\ripple\ripple.floor.d.ts" />
     <TypeScriptCompile Include="ts\RequestManager.ts" />
     <TypeScriptCompile Include="ts\screen.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
@@ -411,12 +412,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="ts\app.js.map" />
-    <Content Include="ts\PlacementController.js.map" />
-    <Content Include="ts\RequestManager.js.map" />
-    <Content Include="ts\screen.js.map" />
-    <Content Include="ts\Ship.js.map" />
-    <Content Include="ts\_references.js.map" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

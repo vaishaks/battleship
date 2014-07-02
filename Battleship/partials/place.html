@@ -2,7 +2,7 @@
 <div class="scenario">
     <div class="ship" data-ng-repeat="ship in ships" data-type="{{ ship.name }}">
         <img class="image bleed block" id="a{{ ship.id }}"  data-ng-src="{{ ship.image }}"/>
-        <div class="info block">
+        <div class="info block" data-ng-click="Place(ship)">
             <div class="name green">{{ ship.name }}</div>
             <div class="hitpoints">HIT POINTS: {{ ship.length }}</div>
             <div class="count" id="inventory">INVENTORY: {{ ship.inventory }}</div>

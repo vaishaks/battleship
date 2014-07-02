@@ -16,10 +16,15 @@ module RequestManager {
         y: number;
     }
 
-    export function getMoves(mode: string, data: Array<IBoard>): JQueryDeferred<Array<IMoves>> {
-        var deferred = $.Deferred<Array<IMoves>>();
+    export function getModes(): JQueryXHR {
         $.support.cors = true;
-        $.ajax({
+        var xhr = $.getJSON(modesUrl);
+        return xhr;
+    }
+
+    export function getMoves(mode: string, data: Array<IBoard>): JQueryXHR {
+        $.support.cors = true;
+        var xhr = $.ajax({
             url: gameUrl.replace("@mode", mode),
             type: 'POST',
             data: JSON.stringify(data),
@@ -28,11 +33,7 @@ module RequestManager {
                 "Content-Type": 'application/json',
             },
             dataType: 'json',
-            success: (data: Array<IMoves>) => {
-                deferred.resolve(data);
-            },
-            error: () => { deferred.reject(); }
-        }).fail("request failed");
-        return deferred;
+        });
+        return xhr;
     }
 } 
