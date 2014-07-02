@@ -108,6 +108,10 @@ module screen_window {
     }
 
     function handleComplete(eventinfo: CustomEvent): void {
+        $(".windows8").hide();
+        $("#splash-screen").hide();
+        $("#screen").show();
+        $("#container").css("display", "block");
         var bg: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
         var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
@@ -128,7 +132,6 @@ module screen_window {
         playerShips[5] = new Ship(patrolBoat2, 1, 5);
         playerShips[5].shipObject.addEventListener("click", (eventinfo: any) => { shipClickEventHandler(5); }, false);
 
-        var hit_us: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("hit_us"));
         cpuShips[0] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 4, 0);
         cpuShips[1] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 3, 1);
         cpuShips[2] = new Ship(new createjs.Bitmap(<HTMLImageElement>queue.getResult("spaceship")), 2, 2);
@@ -490,6 +493,7 @@ module screen_window {
     window.addEventListener("message", messageEventHandler, false);
 
     window.onload = (): void => {
+        $("#screen").hide();
         canvas = <HTMLCanvasElement>document.getElementById("screen");
         reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);

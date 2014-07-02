@@ -99,6 +99,10 @@ var screen_window;
     }
 
     function handleComplete(eventinfo) {
+        $(".windows8").hide();
+        $("#splash-screen").hide();
+        $("#screen").show();
+        $("#container").css("display", "block");
         var bg = new createjs.Bitmap(queue.getResult("backgroundScreen"));
         var aircraftCarrier = new createjs.Bitmap(queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
@@ -131,7 +135,6 @@ var screen_window;
             shipClickEventHandler(5);
         }, false);
 
-        var hit_us = new createjs.Bitmap(queue.getResult("hit_us"));
         cpuShips[0] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 4, 0);
         cpuShips[1] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 3, 1);
         cpuShips[2] = new Ship(new createjs.Bitmap(queue.getResult("spaceship")), 2, 2);
@@ -478,6 +481,7 @@ var screen_window;
     window.addEventListener("message", messageEventHandler, false);
 
     window.onload = function () {
+        $("#screen").hide();
         canvas = document.getElementById("screen");
         reticle = new Reticle(document.getElementById("holder"));
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
