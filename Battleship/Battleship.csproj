@@ -384,10 +384,17 @@
     <Content Include="sounds\hit_us.mp3" />
     <Content Include="sounds\miss.mp3" />
     <Content Include="sounds\theme_music.mp3" />
+    <Content Include="ts\aliencontroller.js" />
     <Content Include="ts\app.js" />
     <Content Include="ts\app.ts" />
+    <Content Include="ts\gamecontroller.js" />
+    <Content Include="ts\placementcontroller.js" />
     <Content Include="ts\PlacementController.ts" />
+    <Content Include="ts\RequestManager.js" />
+    <Content Include="ts\screen.js" />
+    <Content Include="ts\Ship.js" />
     <Content Include="ts\Ship.ts" />
+    <None Include="ts\_references.js" />
     <Content Include="ts\_references.ts" />
     <Content Include="web.config" />
     <Content Include="Scripts\jquery-2.1.1.min.map" />
@@ -421,6 +428,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="ts\aliencontroller.js.map" />
+    <Content Include="ts\app.js.map" />
+    <Content Include="ts\gamecontroller.js.map" />
+    <Content Include="ts\PlacementController.js.map" />
+    <Content Include="ts\RequestManager.js.map" />
+    <Content Include="ts\screen.js.map" />
+    <Content Include="ts\Ship.js.map" />
+    <Content Include="ts\_references.js.map" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
