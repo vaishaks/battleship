@@ -454,6 +454,11 @@ module screen_window {
         endGame(true);
     }
 
+    function creditButtonClickEventHandler(eventinfo: any): void {
+        $("#screen").hide();
+        $("#credit").show();
+    }
+
     function doneButtonClickEventHandler(eventinfo: any): void {
         var data: Array<RequestManager.IBoard> = getBoard();
         RequestManager.getMoves("hard", data).done((data) => {
@@ -576,6 +581,7 @@ module screen_window {
     window.onload = (): void => {
         $("#screen").hide();
         $("#game-over").hide();
+        $("#credits").hide();
         canvas = <HTMLCanvasElement>document.getElementById("screen");
         reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
         document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
@@ -595,6 +601,7 @@ module screen_window {
         document.getElementById("shoot").addEventListener("click", shootButtonClickEventHandler, false);
         document.getElementById("next-move").addEventListener("click", nextMoveClickEventHandler, false);
         document.getElementById("switch-turn").addEventListener("click", switchTurnClickEventHandler, false);
+        document.getElementById("credits-button").addEventListener("click", creditButtonClickEventHandler, false);
         stage = new createjs.Stage(canvas);
         startPreload();
     };

@@ -450,6 +450,11 @@ var screen_window;
         endGame(true);
     }
 
+    function creditButtonClickEventHandler(eventinfo) {
+        $("#screen").hide();
+        $("#credit").show();
+    }
+
     function doneButtonClickEventHandler(eventinfo) {
         var data = getBoard();
         RequestManager.getMoves("hard", data).done(function (data) {
@@ -567,6 +572,7 @@ var screen_window;
     window.onload = function () {
         $("#screen").hide();
         $("#game-over").hide();
+        $("#credits").hide();
         canvas = document.getElementById("screen");
         reticle = new Reticle(document.getElementById("holder"));
         document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
@@ -586,6 +592,7 @@ var screen_window;
         document.getElementById("shoot").addEventListener("click", shootButtonClickEventHandler, false);
         document.getElementById("next-move").addEventListener("click", nextMoveClickEventHandler, false);
         document.getElementById("switch-turn").addEventListener("click", switchTurnClickEventHandler, false);
+        document.getElementById("credits-button").addEventListener("click", creditButtonClickEventHandler, false);
         stage = new createjs.Stage(canvas);
         startPreload();
     };
