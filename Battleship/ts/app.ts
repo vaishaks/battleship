@@ -20,14 +20,14 @@ class Global {
     static namespace: string = "Battleship.Floor";
     static ships: Array<Ship>;
     static aliens: Array<Ship>;     
-    static Ripple: RippleFloor;   
+    static Ripple: RippleFloor;    
 
     constructor() {
         this.RegisterControllers();
         this.RegisterRoutes();
         this.LoadSprites();
         Global.Ripple = new RippleFloor(); 
-        Global.Ripple.setDebugMode(true);       
+        Global.Ripple.setDebugMode(false);       
     }
 
     RegisterRoutes() {

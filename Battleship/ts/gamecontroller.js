@@ -10,7 +10,7 @@
                 this.header.title = "Battleship";
                 this.scope.Start = this.Start;
                 this.scope.Credits = this.Credits;
-                this.scope.Quit = this.Quit;
+                this.header.Exit = this.Quit;
                 break;
 
             case "/mode":
@@ -21,6 +21,16 @@
                 RequestManager.getModes().then(function (modes) {
                     _this.scope.modes = modes;
                     _this.scope.$apply();
+                    $(".modeClick").on("mouseenter", function (e) {
+                        clearTimeout(GameController.timer);
+                        GameController.timer = setTimeout(function () {
+                            $(e.target).trigger("click");
+                        }, 2000);
+                    });
+
+                    $(".modeClick").on("mouseleave", function (e) {
+                        clearTimeout(GameController.timer);
+                    });
                 });
                 break;
 
@@ -29,12 +39,17 @@
                 this.header.title = "Preparing game";
                 this.scope.hint = "Randomize if required. Else stand on begin when ready";
                 this.scope.Begin = this.Begin;
+                this.header.Randomize = this.Randomize;
                 break;
         }
         GameController.location = location;
     }
     GameController.prototype.Start = function () {
         GameController.location.path("mode");
+    };
+
+    GameController.prototype.Randomize = function () {
+        Global.Ripple.sendCommandToFrontScreen("randomize", "");
     };
 
     GameController.prototype.Credits = function () {
@@ -51,10 +66,9 @@
     };
 
     GameController.prototype.Mode = function (mode) {
-        Global.Ripple.sendCommandToFrontScreen("mode", mode);
+        Global.Ripple.sendCommandToFrontScreen("mode", "hard");
         GameController.location.path("randomize");
     };
     GameController.$inject = ["$scope", "$rootScope", "$location"];
     return GameController;
 })();
-//# sourceMappingURL=GameController.js.map

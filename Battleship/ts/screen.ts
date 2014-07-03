@@ -256,7 +256,6 @@ module screen_window {
     function handleComplete(eventinfo: CustomEvent): void {
         $(".windows8").hide();
         init();
-        startGame();
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }
@@ -344,7 +343,8 @@ module screen_window {
     }
 
     function reticleButtonClickEventHandler(eventinfo: any) {
-        switch (eventinfo.target.id) {
+        var dir = eventinfo.commandParameters.join("");
+        switch (dir) {
             case "reticle-up":
                 if (reticle.x - 1 >= 0) {
                     reticle.move(reticle.x - 1, reticle.y);
@@ -440,6 +440,8 @@ module screen_window {
 
     function switchTurnClickEventHandler(eventinfo: any) {
         switchTurn();
+        var ripple = new RippleScreen();
+        ripple.sendCommandToFloor("switch", "");
     }
 
     function newGameButtonClickEventHandler(eventinfo: any): void {
@@ -447,6 +449,7 @@ module screen_window {
     }
 
     function startGameButtonClickEventHandler(eventinfo: any): void {
+        Global.mode = eventinfo.commandParameters.join("");
         startGame();
     }
 
@@ -461,7 +464,7 @@ module screen_window {
 
     function doneButtonClickEventHandler(eventinfo: any): void {
         var data: Array<RequestManager.IBoard> = getBoard();
-        RequestManager.getMoves("hard", data).done((data) => {
+        RequestManager.getMoves(Global.mode, data).done((data) => {
             moves = data;
             playGame();
         });
@@ -576,6 +579,10 @@ module screen_window {
         return true;
     }
 
+    class Global {
+        static mode: string = "Hard";
+    }
+
     window.addEventListener("message", messageEventHandler, false);
 
     window.onload = (): void => {
@@ -584,21 +591,30 @@ module screen_window {
         $("#credits").hide();
         canvas = <HTMLCanvasElement>document.getElementById("screen");
         reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
-        document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
+
+        document.addEventListener("randomize", randomizeButtonClickEventHandler, false);
+        document.addEventListener("start", doneButtonClickEventHandler, false);
+        document.addEventListener("up", reticleButtonClickEventHandler, false);
+        document.addEventListener("down", reticleButtonClickEventHandler, false);
+        document.addEventListener("left", reticleButtonClickEventHandler, false);
+        document.addEventListener("right", reticleButtonClickEventHandler, false);
+        document.addEventListener("fire", shootButtonClickEventHandler, false);
+        document.addEventListener("mode", startGameButtonClickEventHandler, false);
+
+
+        document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-down").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-left").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-right").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("shoot").addEventListener("click", shootButtonClickEventHandler, false);
+
         document.getElementById("new-game").addEventListener("click", newGameButtonClickEventHandler, false);
         document.getElementById("end-game").addEventListener("click", endGameButtonClickEventHandler, false);
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("right").addEventListener("click", movementButtonClickEventHandler, false);
-        document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);
-        document.getElementById("randomize").addEventListener("click", randomizeButtonClickEventHandler, false);
-        document.getElementById("done").addEventListener("click", doneButtonClickEventHandler, false);
-        document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
-        document.getElementById("reticle-down").addEventListener("click", reticleButtonClickEventHandler, false);
-        document.getElementById("reticle-left").addEventListener("click", reticleButtonClickEventHandler, false);
-        document.getElementById("reticle-right").addEventListener("click", reticleButtonClickEventHandler, false);
-        document.getElementById("shoot").addEventListener("click", shootButtonClickEventHandler, false);
+        document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);               
         document.getElementById("next-move").addEventListener("click", nextMoveClickEventHandler, false);
         document.getElementById("switch-turn").addEventListener("click", switchTurnClickEventHandler, false);
         document.getElementById("credits-button").addEventListener("click", creditButtonClickEventHandler, false);

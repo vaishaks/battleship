@@ -1,8 +1,23 @@
 ﻿<div class="container">
     <div data-ng-include="'partials/message.html'"></div>
     <div class="menu">
-        <h1 data-ng-click="Start()">New Game</h1>
-        <h1 data-ng-click="Credits()">Credits</h1>
-        <h1 data-ng-click="Quit()">Quit</h1>
-    </div>
+        <h1 class="startClick" data-ng-click="Start()">New Game</h1>
+        <h1 class="startClick" data-ng-click="Credits()">Credits</h1>
+        <h1 class="startClick" data-ng-click="Quit()">Quit</h1>
+    </div>    
 </div>
+<script type="text/javascript">
+    (function () {
+        var timer = null;
+        $(".startClick").on("mouseenter", function (e) {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                $(e.target).trigger("click");
+            }, 2000);
+        });
+        
+        $(".startClick").on("mouseleave", function (e) {
+            clearTimeout(timer);
+        });
+    })();
+</script>

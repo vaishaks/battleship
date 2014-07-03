@@ -1,6 +1,4 @@
-﻿/// <reference path="_references.ts" />
-/// <reference path="requestmanager.ts" />
-var screen_window;
+﻿var screen_window;
 (function (screen_window) {
     "use strict";
 
@@ -161,7 +159,6 @@ var screen_window;
     }
 
     function startGame() {
-        // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         $("#splash-screen").hide();
         $("#game-over").hide();
         $("#screen").show();
@@ -258,7 +255,6 @@ var screen_window;
     function handleComplete(eventinfo) {
         $(".windows8").hide();
         init();
-        startGame();
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }
@@ -271,7 +267,6 @@ var screen_window;
         var x = Math.floor((eventinfo.rawY - 100) / 200);
         var y = Math.floor((eventinfo.rawX - 100) / 200);
 
-        //cells[x][y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
         shouldUpdate = true;
     }
 
@@ -338,7 +333,8 @@ var screen_window;
     }
 
     function reticleButtonClickEventHandler(eventinfo) {
-        switch (eventinfo.target.id) {
+        var dir = eventinfo.commandParameters.join("");
+        switch (dir) {
             case "reticle-up":
                 if (reticle.x - 1 >= 0) {
                     reticle.move(reticle.x - 1, reticle.y);
@@ -436,6 +432,8 @@ var screen_window;
 
     function switchTurnClickEventHandler(eventinfo) {
         switchTurn();
+        var ripple = new RippleScreen();
+        ripple.sendCommandToFloor("switch", "");
     }
 
     function newGameButtonClickEventHandler(eventinfo) {
@@ -443,6 +441,7 @@ var screen_window;
     }
 
     function startGameButtonClickEventHandler(eventinfo) {
+        Global.mode = eventinfo.commandParameters.join("");
         startGame();
     }
 
@@ -457,7 +456,7 @@ var screen_window;
 
     function doneButtonClickEventHandler(eventinfo) {
         var data = getBoard();
-        RequestManager.getMoves("hard", data).done(function (data) {
+        RequestManager.getMoves(Global.mode, data).done(function (data) {
             moves = data;
             playGame();
         });
@@ -567,6 +566,13 @@ var screen_window;
         return true;
     }
 
+    var Global = (function () {
+        function Global() {
+        }
+        Global.mode = "Hard";
+        return Global;
+    })();
+
     window.addEventListener("message", messageEventHandler, false);
 
     window.onload = function () {
@@ -575,7 +581,22 @@ var screen_window;
         $("#credits").hide();
         canvas = document.getElementById("screen");
         reticle = new Reticle(document.getElementById("holder"));
-        document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
+
+        document.addEventListener("randomize", randomizeButtonClickEventHandler, false);
+        document.addEventListener("start", doneButtonClickEventHandler, false);
+        document.addEventListener("up", reticleButtonClickEventHandler, false);
+        document.addEventListener("down", reticleButtonClickEventHandler, false);
+        document.addEventListener("left", reticleButtonClickEventHandler, false);
+        document.addEventListener("right", reticleButtonClickEventHandler, false);
+        document.addEventListener("fire", shootButtonClickEventHandler, false);
+        document.addEventListener("mode", startGameButtonClickEventHandler, false);
+
+        document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-down").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-left").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("reticle-right").addEventListener("click", reticleButtonClickEventHandler, false);
+        document.getElementById("shoot").addEventListener("click", shootButtonClickEventHandler, false);
+
         document.getElementById("new-game").addEventListener("click", newGameButtonClickEventHandler, false);
         document.getElementById("end-game").addEventListener("click", endGameButtonClickEventHandler, false);
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
@@ -583,13 +604,6 @@ var screen_window;
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("right").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);
-        document.getElementById("randomize").addEventListener("click", randomizeButtonClickEventHandler, false);
-        document.getElementById("done").addEventListener("click", doneButtonClickEventHandler, false);
-        document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
-        document.getElementById("reticle-down").addEventListener("click", reticleButtonClickEventHandler, false);
-        document.getElementById("reticle-left").addEventListener("click", reticleButtonClickEventHandler, false);
-        document.getElementById("reticle-right").addEventListener("click", reticleButtonClickEventHandler, false);
-        document.getElementById("shoot").addEventListener("click", shootButtonClickEventHandler, false);
         document.getElementById("next-move").addEventListener("click", nextMoveClickEventHandler, false);
         document.getElementById("switch-turn").addEventListener("click", switchTurnClickEventHandler, false);
         document.getElementById("credits-button").addEventListener("click", creditButtonClickEventHandler, false);
@@ -605,4 +619,3 @@ var screen_window;
         window.clearInterval(intervalId);
     };
 })(screen_window || (screen_window = {}));
-//# sourceMappingURL=screen.js.map

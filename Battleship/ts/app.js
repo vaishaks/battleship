@@ -1,12 +1,11 @@
-﻿/// <reference path="_references.ts" />
-
+﻿
 var Global = (function () {
     function Global() {
         this.RegisterControllers();
         this.RegisterRoutes();
         this.LoadSprites();
         Global.Ripple = new RippleFloor();
-        Global.Ripple.setDebugMode(true);
+        Global.Ripple.setDebugMode(false);
     }
     Global.prototype.RegisterRoutes = function () {
         var app = angular.module(Global.namespace, ['ngRoute', Global.namespace + ".Controllers"]);
@@ -66,4 +65,3 @@ var Global = (function () {
 })();
 
 var app = new Global();
-//# sourceMappingURL=app.js.map

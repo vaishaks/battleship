@@ -11,10 +11,25 @@
     </div>       
     <div class="hint green">{{ hint }}</div>
     <div class="actionbar">
-        <div class="block square" id="left"></div>
-        <div class="block square" id="up"></div>
-        <div class="block square" id="fire"></div>
-        <div class="block square" id="down"></div>
-        <div class="block square" id="right"></div>
+        <div class="block square actionClick" id="left" data-ng-click="Left()"></div>
+        <div class="block square actionClick" id="up" data-ng-click="Up()"></div>
+        <div class="block square actionClick" id="fire" data-ng-click="Fire()"></div>
+        <div class="block square actionClick" id="down" data-ng-click="Down()"></div>
+        <div class="block square actionClick" id="right" data-ng-click="Right()"></div>
     </div>
 </div>
+<script type="text/javascript">
+    (function () {
+        var timer = null;
+        $(".actionClick").on("mouseenter", function (e) {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                $(e.target).trigger("click");
+            }, 2000);
+        });
+
+        $(".actionClick").on("mouseleave", function (e) {
+            clearTimeout(timer);
+        });
+    })();
+</script>
