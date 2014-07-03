@@ -166,12 +166,10 @@ var screen_window;
         $("#game-over").hide();
         $("#screen").show();
         $("#container").css("display", "block");
+
+        stage.addChild(bg);
+        stage.addChild(playerGridContainer);
         playerMap = randomlyPlaceShips(playerShips, playerCells);
-        var data = getBoard();
-        RequestManager.getMoves("hard", data).done(function (data) {
-            moves = data;
-            playGame();
-        });
 
         cpuMap = randomlyPlaceShips(cpuShips, cpuCells);
 
@@ -190,9 +188,6 @@ var screen_window;
                 cpuGridContainer.addChild(cpuCells[i][j]);
             }
         }
-
-        stage.addChild(bg);
-        stage.addChild(playerGridContainer);
     }
 
     function newGame() {
@@ -447,6 +442,14 @@ var screen_window;
         endGame(true);
     }
 
+    function doneButtonClickEventHandler(eventinfo) {
+        var data = getBoard();
+        RequestManager.getMoves("hard", data).done(function (data) {
+            moves = data;
+            playGame();
+        });
+    }
+
     function createGridCells() {
         var cells = new Array(5);
         var x, y = 0;
@@ -567,6 +570,7 @@ var screen_window;
         document.getElementById("right").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("randomize").addEventListener("click", randomizeButtonClickEventHandler, false);
+        document.getElementById("done").addEventListener("click", doneButtonClickEventHandler, false);
         document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
         document.getElementById("reticle-down").addEventListener("click", reticleButtonClickEventHandler, false);
         document.getElementById("reticle-left").addEventListener("click", reticleButtonClickEventHandler, false);
