@@ -246,6 +246,13 @@ var screen_window;
         $("#screen").hide();
         $("#container").css("display", "none");
         $("#game-over").show();
+        if (cpuWon) {
+            $("#player-lost").css("display", "block");
+            $("#player-won").css("display", "none");
+        } else {
+            $("#player-lost").css("display", "none");
+            $("#player-won").css("display", "block");
+        }
     }
 
     function handleComplete(eventinfo) {
