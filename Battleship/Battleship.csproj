@@ -37,6 +37,7 @@
     <Content Include="images\explosion.png" />
     <Content Include="images\fire.png" />
     <Content Include="images\Foot Print.png" />
+    <Content Include="images\yoda.gif" />
     <Content Include="images\grid.png" />
     <Content Include="images\hit.png" />
     <Content Include="images\hit_us.png" />

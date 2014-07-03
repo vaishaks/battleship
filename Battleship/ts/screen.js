@@ -29,6 +29,8 @@ var screen_window;
     var moves = new Array();
     ;
     var move = 0;
+    var themeMusic;
+    var discoThemeMusic;
     var manifest = [
         { src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
         { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
@@ -101,7 +103,7 @@ var screen_window;
     }
 
     function init() {
-        createjs.Sound.play("theme_music", createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 1, 0);
+        themeMusic = createjs.Sound.play("theme_music", createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 1, 0);
         bg = new createjs.Bitmap(queue.getResult("backgroundScreen"));
         var aircraftCarrier = new createjs.Bitmap(queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
@@ -161,6 +163,7 @@ var screen_window;
     function startGame() {
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         $("#splash-screen").hide();
+        $("#game-over").hide();
         $("#screen").show();
         $("#container").css("display", "block");
         playerMap = randomlyPlaceShips(playerShips, playerCells);
@@ -193,11 +196,18 @@ var screen_window;
     }
 
     function newGame() {
+        discoThemeMusic.pause();
+        themeMusic.play();
+        move = 0;
+        isCpuTurn = true;
+        playerSunkCount = 0;
+        cpuSunkCount = 0;
         init();
         startGame();
     }
 
     function playGame() {
+        themeMusic.setVolume(0.3);
         nextMove();
     }
 
@@ -214,6 +224,11 @@ var screen_window;
     }
 
     function switchTurn() {
+        if (playerSunkCount == 6) {
+            endGame(false);
+        } else if (cpuSunkCount == 6) {
+            endGame(true);
+        }
         if (isCpuTurn) {
             stage.removeChild(playerGridContainer);
             stage.addChild(cpuGridContainer);
@@ -228,6 +243,14 @@ var screen_window;
                 nextMove();
             }, 800);
         }
+    }
+
+    function endGame(cpuWon) {
+        themeMusic.pause();
+        discoThemeMusic = createjs.Sound.play("disco_theme");
+        $("#screen").hide();
+        $("#container").css("display", "none");
+        $("#game-over").show();
     }
 
     function handleComplete(eventinfo) {
@@ -420,6 +443,10 @@ var screen_window;
         startGame();
     }
 
+    function endGameButtonClickEventHandler(eventinfo) {
+        endGame(true);
+    }
+
     function createGridCells() {
         var cells = new Array(5);
         var x, y = 0;
@@ -528,10 +555,12 @@ var screen_window;
 
     window.onload = function () {
         $("#screen").hide();
+        $("#game-over").hide();
         canvas = document.getElementById("screen");
         reticle = new Reticle(document.getElementById("holder"));
         document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
         document.getElementById("new-game").addEventListener("click", newGameButtonClickEventHandler, false);
+        document.getElementById("end-game").addEventListener("click", endGameButtonClickEventHandler, false);
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);

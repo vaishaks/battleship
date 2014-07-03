@@ -12,6 +12,12 @@
     display: none;
 }
 
+#game-over {
+    background-image: url("../images/backgroundscreen.jpg");
+    height: 1200px;
+    width: 1600px;
+}
+
 /*CSS for win-ring*/
 .windows8 {
     position: absolute;

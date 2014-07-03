@@ -28,6 +28,8 @@ module screen_window {
     var intervalId: any;
     var moves: Array<RequestManager.IMoves> = new Array<RequestManager.IMoves>();;
     var move: number = 0;
+    var themeMusic: createjs.SoundInstance;
+    var discoThemeMusic: createjs.SoundInstance;
     var manifest: Object = [{ src: "images/backgroundscreen.jpg", id: "backgroundScreen" },
         { src: "images/aircraftCarrier.png", id: "aircraftcarrier" },
         { src: "images/Destroyer.png", id: "destroyer" },
@@ -109,7 +111,7 @@ module screen_window {
     }
 
     function init(): void {
-        createjs.Sound.play("theme_music", createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 1, 0);
+        themeMusic = createjs.Sound.play("theme_music", createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 1, 0);
         bg = new createjs.Bitmap(<HTMLImageElement>queue.getResult("backgroundScreen"));
         var aircraftCarrier: createjs.Bitmap = new createjs.Bitmap(<HTMLImageElement>queue.getResult("aircraftcarrier"));
         playerShips[0] = new Ship(aircraftCarrier, 4, 0);
@@ -157,6 +159,7 @@ module screen_window {
     function startGame(): void {
         // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         $("#splash-screen").hide();
+        $("#game-over").hide();
         $("#screen").show();
         $("#container").css("display", "block");
         playerMap = randomlyPlaceShips(playerShips, playerCells);
@@ -189,11 +192,18 @@ module screen_window {
     }
 
     function newGame(): void {
+        discoThemeMusic.pause();
+        themeMusic.play();
+        move = 0;
+        isCpuTurn = true;
+        playerSunkCount = 0;
+        cpuSunkCount = 0;
         init();
         startGame();
     }
 
     function playGame(): void {
+        themeMusic.setVolume(0.3);
         nextMove();
     }
 
@@ -211,6 +221,12 @@ module screen_window {
     }
 
     function switchTurn(): void {
+        if (playerSunkCount == 6) {
+            endGame(false);
+        }
+        else if (cpuSunkCount == 6) {
+            endGame(true);
+        }
         if (isCpuTurn) {
             stage.removeChild(playerGridContainer);
             stage.addChild(cpuGridContainer);            
@@ -224,6 +240,14 @@ module screen_window {
             shouldUpdate = true;
             window.setTimeout(() => { nextMove(); }, 800);
         }        
+    }
+
+    function endGame(cpuWon: boolean): void {
+        themeMusic.pause();
+        discoThemeMusic = createjs.Sound.play("disco_theme");
+        $("#screen").hide();
+        $("#container").css("display", "none");
+        $("#game-over").show();
     }
 
     function handleComplete(eventinfo: CustomEvent): void {
@@ -422,6 +446,10 @@ module screen_window {
         startGame();
     }
 
+    function endGameButtonClickEventHandler(eventinfo: any): void {
+        endGame(true);
+    }
+
     function createGridCells(): any[] {
         var cells: any[] = new Array(5);
         var x, y = 0;
@@ -535,10 +563,12 @@ module screen_window {
 
     window.onload = (): void => {
         $("#screen").hide();
+        $("#game-over").hide();
         canvas = <HTMLCanvasElement>document.getElementById("screen");
         reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
         document.getElementById("start-game").addEventListener("click", startGameButtonClickEventHandler, false);
         document.getElementById("new-game").addEventListener("click", newGameButtonClickEventHandler, false);
+        document.getElementById("end-game").addEventListener("click", endGameButtonClickEventHandler, false);
         document.getElementById("up").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("down").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("left").addEventListener("click", movementButtonClickEventHandler, false);
