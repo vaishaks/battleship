@@ -16,9 +16,9 @@
     <script src="Scripts/MetroJs.js"></script>
 </head>
 <body>
-    <!--<div id="container">
+    <div id="container">
         <div id="holder"></div>
-    </div>-->
+    </div>
     <div class="windows8">
         <div class="wBall" id="wBall_1">
             <div class="wInnerBall">
@@ -41,7 +41,7 @@
             </div>
         </div>
     </div>
-    <div id="splash-screen" style="display:none">
+    <div id="splash-screen">
         <img src="images/splash_screen.png" />
     </div>
     <div id="credits" class="magenta">
@@ -92,30 +92,35 @@
             </div>
         </div>
     </div>
-
     <div id="game-over">
-        <h1>GAME OVER</h1>
-        <h3>Player Won</h3>
-        <img src="images/yoda.gif" />
+        <div id="game-over-title">
+            <h1>GAME OVER</h1>
+        </div>
+        <h3 id="player-won" class="game-over-result">Player Won</h3>
+        <h3 id="player-lost" class="game-over-result">Player Lost</h3>
+        <img id="yoda" src="images/yoda.gif" />
     </div>
-    <!--<canvas id="screen" height="1200" width="1600"></canvas>-->
+    <canvas id="screen" height="1200" width="1600"></canvas>
     <br />
-    <button id="start-game">Start Game</button>
-    <button id="new-game">New Game</button>
-    <button id="end-game">End Game</button>
-    <button id="up">up</button>
-    <button id="down">down</button>
-    <button id="left">left</button>
-    <button id="right">right</button>
-    <button id="rotate">rotate</button>
-    <button id="randomize">randomize</button>
-    <button id="reticle-up">reticle up</button>
-    <button id="reticle-down">reticle down</button>
-    <button id="reticle-left">reticle left</button>
-    <button id="reticle-right">reticle right</button>
-    <button id="shoot">shoot</button>
-    <button id="next-move">next move</button>
-    <button id="switch-turn">switch turn</button>
+    <div class="buttons">
+        <button id="start-game">Start Game</button>
+        <button id="new-game">New Game</button>
+        <button id="end-game">End Game</button>
+        <button id="up">up</button>
+        <button id="down">down</button>
+        <button id="left">left</button>
+        <button id="right">right</button>
+        <button id="rotate">rotate</button>
+        <button id="randomize">randomize</button>
+        <button id="done">Done</button>
+        <button id="reticle-up">reticle up</button>
+        <button id="reticle-down">reticle down</button>
+        <button id="reticle-left">reticle left</button>
+        <button id="reticle-right">reticle right</button>
+        <button id="shoot">shoot</button>
+        <button id="next-move">next move</button>
+        <button id="switch-turn">switch turn</button>
+    </div>
 
 
     <script type="text/javascript">

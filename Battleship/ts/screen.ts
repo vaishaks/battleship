@@ -162,12 +162,10 @@ module screen_window {
         $("#game-over").hide();
         $("#screen").show();
         $("#container").css("display", "block");
+
+        stage.addChild(bg);
+        stage.addChild(playerGridContainer);
         playerMap = randomlyPlaceShips(playerShips, playerCells);
-        var data: Array<RequestManager.IBoard> = getBoard();
-        RequestManager.getMoves("hard", data).done((data) => {
-            moves = data;
-            playGame();
-        });
 
         cpuMap = randomlyPlaceShips(cpuShips, cpuCells);
 
@@ -186,9 +184,6 @@ module screen_window {
                 cpuGridContainer.addChild(cpuCells[i][j]);
             }
         }
-
-        stage.addChild(bg);
-        stage.addChild(playerGridContainer);
     }
 
     function newGame(): void {
@@ -248,6 +243,14 @@ module screen_window {
         $("#screen").hide();
         $("#container").css("display", "none");
         $("#game-over").show();
+        if (cpuWon) {
+            $("#player-lost").css("display", "block");
+            $("#player-won").css("display", "none");
+        }
+        else {
+            $("#player-lost").css("display", "none");
+            $("#player-won").css("display", "block");
+        }
     }
 
     function handleComplete(eventinfo: CustomEvent): void {
@@ -451,6 +454,14 @@ module screen_window {
         endGame(true);
     }
 
+    function doneButtonClickEventHandler(eventinfo: any): void {
+        var data: Array<RequestManager.IBoard> = getBoard();
+        RequestManager.getMoves("hard", data).done((data) => {
+            moves = data;
+            playGame();
+        });
+    }
+
     function createGridCells(): any[] {
         var cells: any[] = new Array(5);
         var x, y = 0;
@@ -576,6 +587,7 @@ module screen_window {
         document.getElementById("right").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("randomize").addEventListener("click", randomizeButtonClickEventHandler, false);
+        document.getElementById("done").addEventListener("click", doneButtonClickEventHandler, false);
         document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
         document.getElementById("reticle-down").addEventListener("click", reticleButtonClickEventHandler, false);
         document.getElementById("reticle-left").addEventListener("click", reticleButtonClickEventHandler, false);

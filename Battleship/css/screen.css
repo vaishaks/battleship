@@ -1,7 +1,5 @@
-﻿body {
-    overflow: hidden;
-    margin: 0 !important;
-    padding: 0;
+﻿#body {
+    font-family: "Segoe UI";
 }
 
 #holder {
@@ -20,8 +18,45 @@
 
 #game-over {
     background-image: url("../images/backgroundscreen.jpg");
+    position: absolute;
+    top: 0;
     height: 1200px;
     width: 1600px;
+}
+
+#game-over-title {
+    color: #fff;
+    font-family: 'Segoe UI';
+    font-size: 80px;
+    position: relative;
+    left: 280px;
+}
+
+.game-over-result {
+    font-family: 'Segoe UI';
+    font-size: 70px;
+    position: relative;
+    left: 600px;
+}
+
+.buttons {
+    position: absolute;
+    top: 1210px;
+}
+
+#player-won {
+    color: #04f526;
+    display: none;j
+}
+
+#player-lost {
+    color: #fb5d5d;
+}
+
+#yoda {
+    position: relative;
+    top: 400px;
+    left: 700px;
 }
 
 /*CSS for win-ring*/
