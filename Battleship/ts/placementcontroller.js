@@ -6,23 +6,8 @@
         this.scope.ships = Global.ships;
         this.scope.message = "Ha ha ha. You're fleet isn't even organized. This is going to be so easy, puny human.";
         this.header.title = "Place your fleet";
-        this.scope.Place = this.Place;
-        PlacementContoller.Location = location;
         this.SubscribeEvents();
     }
-    PlacementContoller.prototype.Place = function () {
-        var selectedShip = Global.ships[PlacementContoller.shipsPlaced];
-        if (this.gameMode !== true) {
-            if (selectedShip.inventory != 0) {
-                selectedShip.Destroy();
-                PlacementContoller.shipsPlaced += 1;
-            }
-        }
-        if (PlacementContoller.shipsPlaced === 6) {
-            this.gameMode = true;
-        }
-    };
-
     PlacementContoller.prototype.SubscribeEvents = function () {
         // subscribe to ripple gestures here;
     };
@@ -55,8 +40,6 @@
         // subscribe to a switch event from screen
     };
     PlacementContoller.$inject = ["$scope", "$rootScope", "$location"];
-
-    PlacementContoller.shipsPlaced = 0;
     return PlacementContoller;
 })();
 //# sourceMappingURL=PlacementController.js.map

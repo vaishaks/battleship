@@ -9,16 +9,14 @@
     margin: 0;
     padding: 0;
     color: #FFF;
+    /*overflow: hidden;*/
 }
 
 
 #floor {
-    /*left: 800px;
-    bottom: -800px;*/
     background-color: darkslateblue;
     width: 1200px;
     height: 1600px;
-    margin: 0 auto;
     background-image: url("/images/background.jpg");
 }
 
@@ -82,7 +80,7 @@
 .messages {
     position: relative;
     width: 70%;
-    height: 200px;    
+    height: 200px;
 }
 
     .messages .callout {
@@ -96,7 +94,7 @@
         font-weight: 400;
         padding: 20px;
         font-size: 16pt;
-        padding-right: 100px;        
+        padding-right: 100px;
     }
 
     .messages .image {
@@ -126,21 +124,35 @@
     font-size: 16pt;
 }
 
+#begin {
+    font-size: 100pt;
+    text-align: center;
+    margin-top: 400px;
+    font-weight: 100;
+}
+
+.actionbar,
 .safezone {
     height: 250px;
     display: block;
     margin: auto;
 }
 
+    .actionbar .square,
     .safezone .square,
     .safezone .wide {
         background: transparent center center no-repeat;
         background-size: 100px;
     }
 
+    .actionbar .square,
     .safezone .square {
         width: 150px;
         height: 250px;
+    }
+
+    .actionbar .square {
+        margin: 0 40px;
     }
 
     .safezone .wide {
@@ -169,11 +181,33 @@
 }
 
 #fire {
+    background-image: url("/images/fire.png");
+}
+
+
+#left {
+    background-image: url("/images/left.png");
+}
+
+
+#right {
+    background-image: url("/images/right.png");
+}
+
+
+#up {
     background-image: url("/images/up.png");
 }
 
+
+#down {
+    background-image: url("/images/down.png");
+}
+
+
+
 .ship {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     display: block;
 }
 

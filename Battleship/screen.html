@@ -7,16 +7,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/screen.css" rel="stylesheet" />
+    <link href="css/MetroJs.css" rel="stylesheet" />
     <script src="http://code.createjs.com/createjs-2013.12.12.min.js"></script>
     <script src="Scripts/jquery-2.1.1.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="ts/RequestManager.js"></script>
     <script src="ts/screen.js"></script>
+    <script src="Scripts/MetroJs.js"></script>
 </head>
 <body>
-    <div id="container">
+    <!--<div id="container">
         <div id="holder"></div>
-    </div>
+    </div>-->
     <div class="windows8">
         <div class="wBall" id="wBall_1">
             <div class="wInnerBall">
@@ -38,16 +40,65 @@
             <div class="wInnerBall">
             </div>
         </div>
-    </div> 
-    <div id="splash-screen">
+    </div>
+    <div id="splash-screen" style="display:none">
         <img src="images/splash_screen.png" />
     </div>
+    <div id="credits" class="magenta">
+
+        <div class="tiles blue tile-group six-wide credits-main">
+            <div class="list-tile mango">
+                <h1 style="margin-left:200px;font-family:'Segoe WP SemiLight';font-size:3em;margin-left:420px;">Credits</h1><br />
+                <ul class="flip-list fourTiles" data-mode="flip-list" data-delay="2000">
+                    <li>
+                        <div><img class="full" src="/images/credits/harshit.jpg" alt="1" /></div>
+                        <div><img class="full" src="/images/credits/name1.png" alt="1" /></div>
+                        <!--<div><img class="full" src="/images/credits/org1.png" alt="1" /></div>-->
+                    </li>
+                    <li>
+                        <div><img class="full" src="/images/credits/vaishak.jpg" alt="1" /></div>
+                        <div><img class="full" src="/images/credits/name2.png" alt="2" /></div>
+                        <!--<div><img class="full" src="/images/credits/Org2.png" alt="2" /></div>-->
+                    </li>
+                    <li>
+                        <div><img class="full" src="/images/credits/priyan.jpg" alt="1" /></div>
+                        <div><img class="full" src="/images/credits/name3.png" alt="3" /></div>
+                        <!--<div><img class="full" src="/images/credits/Org3.png" alt="3" /></div>-->
+                    </li>
+                    <li data-direction="horizontal">
+                        <div><img class="full" src="/images/credits/name4.png" alt="4" /></div>
+                        <div><img class="full" src="/images/credits/Org4.png" alt="4" /></div>
+                    </li>
+                    <li>
+                        <div><img class="full" src="/images/credits/aman.jpg" alt="1" /></div>
+                        <div><img class="full" src="/images/credits/name5.png" alt="3" /></div>
+                        <!--<div><img class="full" src="/images/credits/Org5.png" alt="3" /></div>-->
+                    </li>
+                    <li data-direction="horizontal">
+                        <div><img class="full" src="/images/credits/mahak.jpg" alt="1" /></div>
+                        <div><img class="full" src="/images/credits/name6.png" alt="4" /></div>
+                        <!--<div><img class="full" src="/images/credits/Org6.png" alt="4" /></div>-->
+                    </li>
+                    <li>
+
+
+                    </li>
+                    <li data-direction="horizontal">
+                        <div><img class="full" src="/images/credits/bhargav.jpg" alt="4" /></div>
+                        <div><img class="full" src="/images/credits/name7.png" alt="4" /></div>
+                        <!--<div><img class="full" src="/images/credits/Org7.png" alt="4" /></div>-->
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <div id="game-over">
         <h1>GAME OVER</h1>
         <h3>Player Won</h3>
         <img src="images/yoda.gif" />
     </div>
-    <canvas id="screen" height="1200" width="1600"></canvas>
+    <!--<canvas id="screen" height="1200" width="1600"></canvas>-->
     <br />
     <button id="start-game">Start Game</button>
     <button id="new-game">New Game</button>
@@ -65,6 +116,15 @@
     <button id="shoot">shoot</button>
     <button id="next-move">next move</button>
     <button id="switch-turn">switch turn</button>
+
+
+    <script type="text/javascript">
+        // apply regular slide universally unless .exclude class is applied
+        // NOTE: The default options for each liveTile are being pulled from the 'data-' attributes
+        $(".live-tile, .flip-list").not(".exclude").liveTile();
+    </script>
+    <script src="Scripts/reticle.js"></script>
 </body>
-<script src="Scripts/reticle.js"></script>
+
+
 </html>

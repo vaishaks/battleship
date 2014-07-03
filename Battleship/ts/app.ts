@@ -26,7 +26,8 @@ class Global {
         this.RegisterControllers();
         this.RegisterRoutes();
         this.LoadSprites();
-        Global.Ripple = new RippleFloor(true);        
+        Global.Ripple = new RippleFloor(); 
+        Global.Ripple.setDebugMode(true);       
     }
 
     RegisterRoutes() {
@@ -41,6 +42,11 @@ class Global {
 
             routes.when("/mode", {
                 templateUrl: url + "mode.html",
+                controller: "GameController"
+            });
+
+            routes.when("/randomize", {
+                templateUrl: url + "randomize.html",
                 controller: "GameController"
             });
 
@@ -75,18 +81,7 @@ class Global {
         Global.aliens.push(new Ship("alienShip3", "images/AlienShip3.png", 1, 3, "alienShip3"));
         Global.aliens.push(new Ship("alienShip2", "images/AlienShip2.png", 2, 2, "alienShip2"));
         Global.aliens.push(new Ship("alienShip1", "images/AlienShip1.png", 2, 1, "alienShip1"));
-    }
-
-    BindHandlers() {
-        var exit = document.getElementById("exit");
-        var rotate = document.getElementById("rotate");
-        var randomize = document.getElementById("randomize");
-        var fire = document.getElementById("fire");
-        exit.addEventListener("click", () => { console.log("exit"); }, false);
-        rotate.addEventListener("click", () => { console.log("rotate"); }, false);
-        randomize.addEventListener("click", () => { console.log("randomize"); }, false);
-        fire.addEventListener("click", () => { console.log("done/fire"); }, false);
-    }
+    }    
 }
 
 var app = new Global();

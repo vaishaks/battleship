@@ -5,7 +5,8 @@ var Global = (function () {
         this.RegisterControllers();
         this.RegisterRoutes();
         this.LoadSprites();
-        Global.Ripple = new RippleFloor(true);
+        Global.Ripple = new RippleFloor();
+        Global.Ripple.setDebugMode(true);
     }
     Global.prototype.RegisterRoutes = function () {
         var app = angular.module(Global.namespace, ['ngRoute', Global.namespace + ".Controllers"]);
@@ -20,6 +21,11 @@ var Global = (function () {
 
                 routes.when("/mode", {
                     templateUrl: url + "mode.html",
+                    controller: "GameController"
+                });
+
+                routes.when("/randomize", {
+                    templateUrl: url + "randomize.html",
                     controller: "GameController"
                 });
 
@@ -54,25 +60,6 @@ var Global = (function () {
         Global.aliens.push(new Ship("alienShip3", "images/AlienShip3.png", 1, 3, "alienShip3"));
         Global.aliens.push(new Ship("alienShip2", "images/AlienShip2.png", 2, 2, "alienShip2"));
         Global.aliens.push(new Ship("alienShip1", "images/AlienShip1.png", 2, 1, "alienShip1"));
-    };
-
-    Global.prototype.BindHandlers = function () {
-        var exit = document.getElementById("exit");
-        var rotate = document.getElementById("rotate");
-        var randomize = document.getElementById("randomize");
-        var fire = document.getElementById("fire");
-        exit.addEventListener("click", function () {
-            console.log("exit");
-        }, false);
-        rotate.addEventListener("click", function () {
-            console.log("rotate");
-        }, false);
-        randomize.addEventListener("click", function () {
-            console.log("randomize");
-        }, false);
-        fire.addEventListener("click", function () {
-            console.log("done/fire");
-        }, false);
     };
     Global.namespace = "Battleship.Floor";
     return Global;

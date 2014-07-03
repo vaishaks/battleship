@@ -256,6 +256,7 @@ var screen_window;
     function handleComplete(eventinfo) {
         $(".windows8").hide();
         init();
+        startGame();
         createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", update, false);
     }

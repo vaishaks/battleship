@@ -19,6 +19,7 @@
   <ItemGroup>
     <Content Include="css\app.css" />
     <Content Include="css\floor.css" />
+    <Content Include="css\MetroJs.css" />
     <Content Include="floor.html" />
     <Content Include="images\aircraft carrier.png" />
     <Content Include="images\aircraftCarrier.png" />
@@ -32,11 +33,35 @@
     <Content Include="images\backgroundscreen.jpg" />
     <Content Include="images\Cloud-Thunder.png" />
     <Content Include="images\credits.png" />
+    <Content Include="images\credits\aman.jpg" />
+    <Content Include="images\credits\back.png" />
+    <Content Include="images\credits\bhargav.jpg" />
+    <Content Include="images\credits\credits_background.png" />
+    <Content Include="images\credits\harshit.jpg" />
+    <Content Include="images\credits\mahak.jpg" />
+    <Content Include="images\credits\name1.png" />
+    <Content Include="images\credits\name2.png" />
+    <Content Include="images\credits\name3.png" />
+    <Content Include="images\credits\name4.png" />
+    <Content Include="images\credits\name5.png" />
+    <Content Include="images\credits\name6.png" />
+    <Content Include="images\credits\name7.png" />
+    <Content Include="images\credits\org1.png" />
+    <Content Include="images\credits\Org2.png" />
+    <Content Include="images\credits\Org3.png" />
+    <Content Include="images\credits\Org4.png" />
+    <Content Include="images\credits\Org5.png" />
+    <Content Include="images\credits\Org6.png" />
+    <Content Include="images\credits\Org7.png" />
+    <Content Include="images\credits\priyan.jpg" />
+    <Content Include="images\credits\vaishak.jpg" />
     <Content Include="images\Destroyer.png" />
     <Content Include="images\down.png" />
     <Content Include="images\explosion.png" />
     <Content Include="images\fire.png" />
     <Content Include="images\Foot Print.png" />
+    <Content Include="images\name1.png" />
+    <Content Include="images\org1.png" />
     <Content Include="images\yoda.gif" />
     <Content Include="images\grid.png" />
     <Content Include="images\hit.png" />
@@ -60,6 +85,7 @@
     <Content Include="images\up.png" />
     <Content Include="index.html" />
     <Content Include="css\screen.css" />
+    <Content Include="partials\randomize.html" />
     <Content Include="partials\mode.html" />
     <Content Include="partials\start.html" />
     <Content Include="partials\message.html" />
@@ -378,6 +404,7 @@
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\kinetic-v4.4.3.js" />
     <Content Include="Scripts\kinetic-v4.4.3.min.js" />
+    <Content Include="Scripts\MetroJs.js" />
     <Content Include="Scripts\ripple.floor.js" />
     <Content Include="Scripts\ripple.screen.js" />
     <Content Include="sounds\disco_theme.mp3" />
@@ -406,6 +433,7 @@
     <Content Include="ts\GameController.ts" />
     <TypeScriptCompile Include="Scripts\typings\ripple\ripple.screen.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\ripple\ripple.floor.d.ts" />
+    <TypeScriptCompile Include="ts\ClickEventHandler.ts" />
     <TypeScriptCompile Include="ts\RequestManager.ts" />
     <TypeScriptCompile Include="ts\screen.ts" />
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular-animate.d.ts" />
