@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="_references.ts" />
+
 var Global = (function () {
     function Global() {
         this.RegisterControllers();
@@ -65,3 +66,4 @@ var Global = (function () {
 })();
 
 var app = new Global();
+//# sourceMappingURL=app.js.map

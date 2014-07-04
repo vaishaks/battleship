@@ -1,4 +1,6 @@
-﻿var screen_window;
+﻿/// <reference path="_references.ts" />
+/// <reference path="requestmanager.ts" />
+var screen_window;
 (function (screen_window) {
     "use strict";
 
@@ -159,6 +161,7 @@
     }
 
     function startGame() {
+        // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         $("#splash-screen").hide();
         $("#game-over").hide();
         $("#screen").show();
@@ -267,6 +270,7 @@
         var x = Math.floor((eventinfo.rawY - 100) / 200);
         var y = Math.floor((eventinfo.rawX - 100) / 200);
 
+        //cells[x][y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
         shouldUpdate = true;
     }
 
@@ -449,9 +453,10 @@
         endGame(true);
     }
 
-    function creditButtonClickEventHandler(eventinfo) {
+    function creditsButtonClickEventHandler(eventinfo) {
         $("#screen").hide();
-        $("#credit").show();
+        $("#splash-screen").hide();
+        $("#credits").show();
     }
 
     function doneButtonClickEventHandler(eventinfo) {
@@ -590,6 +595,7 @@
         document.addEventListener("right", reticleButtonClickEventHandler, false);
         document.addEventListener("fire", shootButtonClickEventHandler, false);
         document.addEventListener("mode", startGameButtonClickEventHandler, false);
+        document.addEventListener("credits", creditsButtonClickEventHandler, false);
 
         document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
         document.getElementById("reticle-down").addEventListener("click", reticleButtonClickEventHandler, false);
@@ -606,7 +612,7 @@
         document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);
         document.getElementById("next-move").addEventListener("click", nextMoveClickEventHandler, false);
         document.getElementById("switch-turn").addEventListener("click", switchTurnClickEventHandler, false);
-        document.getElementById("credits-button").addEventListener("click", creditButtonClickEventHandler, false);
+        document.getElementById("credits-button").addEventListener("click", creditsButtonClickEventHandler, false);
         stage = new createjs.Stage(canvas);
         startPreload();
     };
@@ -619,3 +625,4 @@
         window.clearInterval(intervalId);
     };
 })(screen_window || (screen_window = {}));
+//# sourceMappingURL=screen.js.map

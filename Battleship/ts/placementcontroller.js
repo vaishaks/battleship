@@ -49,7 +49,9 @@
     };
 
     PlacementContoller.prototype.Damage = function () {
+        // subscribe to a damage event from screen
     };
     PlacementContoller.$inject = ["$scope", "$rootScope", "$location"];
     return PlacementContoller;
 })();
+//# sourceMappingURL=PlacementController.js.map

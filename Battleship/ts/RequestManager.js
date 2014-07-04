@@ -1,4 +1,5 @@
-﻿var RequestManager;
+﻿/// <reference path="_references.ts" />
+var RequestManager;
 (function (RequestManager) {
     var baseUrl = "http://battleshipapi.azurewebsites.net/api/game/";
     var modesUrl = baseUrl + "/modes";
@@ -27,3 +28,4 @@
     }
     RequestManager.getMoves = getMoves;
 })(RequestManager || (RequestManager = {}));
+//# sourceMappingURL=RequestManager.js.map

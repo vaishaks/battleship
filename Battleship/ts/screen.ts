@@ -457,9 +457,10 @@ module screen_window {
         endGame(true);
     }
 
-    function creditButtonClickEventHandler(eventinfo: any): void {
+    function creditsButtonClickEventHandler(eventinfo: any): void {
         $("#screen").hide();
-        $("#credit").show();
+        $("#splash-screen").hide();
+        $("#credits").show();
     }
 
     function doneButtonClickEventHandler(eventinfo: any): void {
@@ -600,6 +601,7 @@ module screen_window {
         document.addEventListener("right", reticleButtonClickEventHandler, false);
         document.addEventListener("fire", shootButtonClickEventHandler, false);
         document.addEventListener("mode", startGameButtonClickEventHandler, false);
+        document.addEventListener("credits", creditsButtonClickEventHandler, false);
 
 
         document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
@@ -617,7 +619,7 @@ module screen_window {
         document.getElementById("rotate").addEventListener("click", movementButtonClickEventHandler, false);               
         document.getElementById("next-move").addEventListener("click", nextMoveClickEventHandler, false);
         document.getElementById("switch-turn").addEventListener("click", switchTurnClickEventHandler, false);
-        document.getElementById("credits-button").addEventListener("click", creditButtonClickEventHandler, false);
+        document.getElementById("credits-button").addEventListener("click", creditsButtonClickEventHandler, false);
         stage = new createjs.Stage(canvas);
         startPreload();
     };
