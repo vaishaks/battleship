@@ -1,6 +1,4 @@
-﻿/// <reference path="_references.ts" />
-/// <reference path="requestmanager.ts" />
-var screen_window;
+﻿var screen_window;
 (function (screen_window) {
     "use strict";
 
@@ -161,7 +159,6 @@ var screen_window;
     }
 
     function startGame() {
-        // intervalId = window.setInterval(randomlyPlaceShips, 1000);
         $("#splash-screen").hide();
         $("#game-over").hide();
         $("#screen").show();
@@ -256,6 +253,8 @@ var screen_window;
     }
 
     function handleComplete(eventinfo) {
+        document.addEventListener("mode", startGameButtonClickEventHandler, false);
+        document.addEventListener("start", doneButtonClickEventHandler, false);
         $(".windows8").hide();
         init();
         createjs.Ticker.setFPS(60);
@@ -270,7 +269,6 @@ var screen_window;
         var x = Math.floor((eventinfo.rawY - 100) / 200);
         var y = Math.floor((eventinfo.rawX - 100) / 200);
 
-        //cells[x][y].addChild(new createjs.Bitmap(<HTMLImageElement>queue.getResult("miss")));
         shouldUpdate = true;
     }
 
@@ -588,13 +586,11 @@ var screen_window;
         reticle = new Reticle(document.getElementById("holder"));
 
         document.addEventListener("randomize", randomizeButtonClickEventHandler, false);
-        document.addEventListener("start", doneButtonClickEventHandler, false);
         document.addEventListener("up", reticleButtonClickEventHandler, false);
         document.addEventListener("down", reticleButtonClickEventHandler, false);
         document.addEventListener("left", reticleButtonClickEventHandler, false);
         document.addEventListener("right", reticleButtonClickEventHandler, false);
         document.addEventListener("fire", shootButtonClickEventHandler, false);
-        document.addEventListener("mode", startGameButtonClickEventHandler, false);
         document.addEventListener("credits", creditsButtonClickEventHandler, false);
 
         document.getElementById("reticle-up").addEventListener("click", reticleButtonClickEventHandler, false);
@@ -625,4 +621,3 @@ var screen_window;
         window.clearInterval(intervalId);
     };
 })(screen_window || (screen_window = {}));
-//# sourceMappingURL=screen.js.map

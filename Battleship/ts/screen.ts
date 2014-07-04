@@ -254,6 +254,8 @@ module screen_window {
     }
 
     function handleComplete(eventinfo: CustomEvent): void {
+        document.addEventListener("mode", startGameButtonClickEventHandler, false);
+        document.addEventListener("start", doneButtonClickEventHandler, false);
         $(".windows8").hide();
         init();
         createjs.Ticker.setFPS(60);
@@ -594,13 +596,11 @@ module screen_window {
         reticle = new Reticle(<HTMLDivElement>document.getElementById("holder"));
 
         document.addEventListener("randomize", randomizeButtonClickEventHandler, false);
-        document.addEventListener("start", doneButtonClickEventHandler, false);
         document.addEventListener("up", reticleButtonClickEventHandler, false);
         document.addEventListener("down", reticleButtonClickEventHandler, false);
         document.addEventListener("left", reticleButtonClickEventHandler, false);
         document.addEventListener("right", reticleButtonClickEventHandler, false);
         document.addEventListener("fire", shootButtonClickEventHandler, false);
-        document.addEventListener("mode", startGameButtonClickEventHandler, false);
         document.addEventListener("credits", creditsButtonClickEventHandler, false);
 
 

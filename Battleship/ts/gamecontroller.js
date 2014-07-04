@@ -72,4 +72,3 @@
     GameController.$inject = ["$scope", "$rootScope", "$location"];
     return GameController;
 })();
-//# sourceMappingURL=GameController.js.map

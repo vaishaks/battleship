@@ -27,7 +27,7 @@ class Global {
         this.RegisterRoutes();
         this.LoadSprites();
         Global.Ripple = new RippleFloor(); 
-        Global.Ripple.setDebugMode(false);       
+        Global.Ripple.setDebugMode(true);       
     }
 
     RegisterRoutes() {

@@ -36,7 +36,6 @@
     <Content Include="images\credits\aman.jpg" />
     <Content Include="images\credits\back.png" />
     <Content Include="images\credits\bhargav.jpg" />
-    <Content Include="images\credits\credits_background.png" />
     <Content Include="images\credits\harshit.jpg" />
     <Content Include="images\credits\jayeeta.jpg" />
     <Content Include="images\credits\mahak.jpg" />
@@ -61,8 +60,6 @@
     <Content Include="images\explosion.png" />
     <Content Include="images\fire.png" />
     <Content Include="images\Foot Print.png" />
-    <Content Include="images\name1.png" />
-    <Content Include="images\org1.png" />
     <Content Include="images\yoda.gif" />
     <Content Include="images\grid.png" />
     <Content Include="images\hit.png" />
@@ -120,9 +117,9 @@
     <Content Include="Scripts\angular-cookies.min.js.map" />
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular.min.js.map" />
-    <None Include="battleship.pubxml" />
     <None Include="battleship2.pubxml" />
     <None Include="battleship3.pubxml" />
+    <None Include="battleship4.pubxml" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_af-na.js" />
     <Content Include="Scripts\i18n\angular-locale_af-za.js" />

@@ -21,4 +21,3 @@
     };
     return Ship;
 })();
-//# sourceMappingURL=Ship.js.map
